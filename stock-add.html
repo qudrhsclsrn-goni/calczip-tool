@@ -8,73 +8,57 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo">Calc<span>Zip</span></a>
-    <nav class="header-nav">
-      <a href="index.html">홈</a>
-      <a href="privacy.html">개인정보처리방침</a>
-    </nav>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="index.html">홈</a>
+        <a href="privacy.html">개인정보처리방침</a>
+      </nav>
+      <button class="dark-toggle" onclick="toggleDark()" title="다크모드 전환" id="dark-btn">🌙</button>
+    </div>
   </div>
 </header>
 
 <div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
 
-  <!-- 왼쪽 광고 -->
-  <aside class="side-ad">
-    <div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div>
-  </aside>
-
-  <!-- 본문 -->
   <main class="main-content">
-
     <nav class="breadcrumb">
-      <a href="index.html">홈</a>
-      <span>›</span>
-      <span>물타기 계산기</span>
+      <a href="index.html">홈</a><span>›</span><span>물타기 계산기</span>
     </nav>
 
     <h1 class="page-title">물타기 계산기</h1>
     <p class="page-desc">주식·코인 계산기입니다. 추가 매수 시 평균단가를 입력하여 계산해보세요.</p>
 
-    <!-- 상단 광고 -->
     <div class="ad-banner"><!-- AdSense 728x90 -->광고 영역 (728×90)</div>
 
-    <!-- ===== 계산기 카드 ===== -->
     <div class="calc-card">
-
-      <!-- 매수 내역 -->
       <div class="input-group">
         <label class="input-label">매수 내역 <span class="sub">— 여러 번 나눠 산 경우 모두 입력</span></label>
         <div id="entries"></div>
         <button class="btn-add" onclick="addEntry()">+ 매수 내역 추가</button>
       </div>
-
       <div class="divider"></div>
-
-      <!-- 현재가 / 추가매수 -->
       <div class="input-row">
         <div class="input-group" style="margin:0">
           <label class="input-label">현재가 <span class="sub">(원)</span></label>
-          <input class="input-field" type="number" id="current-price"
-            placeholder="예: 45,000" oninput="calc()" />
+          <input class="input-field" type="number" id="current-price" placeholder="예: 45,000" oninput="calc()" />
         </div>
         <div class="input-group" style="margin:0">
           <label class="input-label">추가매수 수량</label>
-          <input class="input-field" type="number" id="add-qty"
-            placeholder="없으면 비워두세요" step="any" oninput="calc()" />
+          <input class="input-field" type="number" id="add-qty" placeholder="없으면 비워두세요" step="any" oninput="calc()" />
         </div>
       </div>
-
     </div>
 
-    <!-- ===== 결과 ===== -->
     <div id="result-area" style="display:none">
       <div class="calc-card">
-
         <div class="result-grid">
           <div class="result-card highlight">
             <div class="result-label">평균단가</div>
@@ -96,51 +80,34 @@
             <div class="result-sub" id="r-pnl-sub"></div>
           </div>
         </div>
-
-        <!-- BEP 바 -->
         <div id="bep-section" style="display:none">
           <div class="divider"></div>
           <div class="section-title">손익분기 분석</div>
           <div class="bep-bar-wrap" id="bep-bars"></div>
         </div>
-
-        <!-- 상세 테이블 -->
         <div class="divider"></div>
         <div class="section-title">매수 내역 상세</div>
         <div style="overflow-x:auto">
           <table class="result-table">
-            <thead>
-              <tr>
-                <th>회차</th><th>매수가</th><th>수량</th>
-                <th>금액</th><th>비중</th><th>손익률</th>
-              </tr>
-            </thead>
+            <thead><tr><th>회차</th><th>매수가</th><th>수량</th><th>금액</th><th>비중</th><th>손익률</th></tr></thead>
             <tbody id="r-tbody"></tbody>
           </table>
         </div>
-
       </div>
     </div>
 
-    <!-- ===== 최근 기록 ===== -->
     <div id="history-section" style="display:none">
       <div class="calc-card">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
           <div class="section-title" style="margin:0;border:none;padding:0">최근 계산 기록</div>
-          <button onclick="clearHistory()"
-            style="font-size:12px;color:var(--gray-400);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px"
-            onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--gray-400)'">
-            전체 삭제
-          </button>
+          <button onclick="clearHistory()" style="font-size:12px;color:var(--text-muted);background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-family:var(--font)" onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='var(--text-muted)'">전체 삭제</button>
         </div>
         <div class="history-list" id="history-list"></div>
       </div>
     </div>
 
-    <!-- 하단 광고 -->
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
-    <!-- 관련 계산기 -->
     <div>
       <div class="section-title">관련 계산기</div>
       <div class="related-grid">
@@ -150,14 +117,9 @@
         <a class="related-card"><div class="r-icon">💼</div>연봉 실수령</a>
       </div>
     </div>
-
   </main>
 
-  <!-- 오른쪽 광고 -->
-  <aside class="side-ad">
-    <div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div>
-  </aside>
-
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
 </div>
 
 <footer class="site-footer">
@@ -165,95 +127,82 @@
     <div class="footer-links">
       <a href="index.html">홈</a>
       <a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+      <a href="cookie.html">쿠키 정책</a>
+      <a href="contact.html">문의하기</a>
     </div>
-    <p class="footer-copy">© 2025 CalcZip. 무료로 제공되는 웹 계산기 서비스입니다.</p>
+    <p class="footer-notice">
+      모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
+      중요한 결정 전 반드시 전문가와 확인하세요.<br>
+      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+    </p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
   </div>
 </footer>
 
 <script>
-let entries = [];
-let idSeq = 0;
-const HISTORY_KEY = 'calczip_avg_history';
-const MAX_HISTORY = 5;
+let entries = [], idSeq = 0;
+const HISTORY_KEY = 'calczip_avg_history', MAX_HISTORY = 5;
 
-/* ===== 매수 내역 ===== */
 function addEntry() {
   const id = ++idSeq;
   entries.push({ id, price: 0, qty: 0 });
   renderEntries();
 }
-
 function removeEntry(id) {
   entries = entries.filter(e => e.id !== id);
-  renderEntries();
-  calc();
+  renderEntries(); calc();
 }
-
 function updateEntry(id, field, val) {
   const e = entries.find(e => e.id === id);
   if (e) e[field] = parseFloat(val) || 0;
   calc();
 }
-
 function renderEntries() {
-  const container = document.getElementById('entries');
-  container.innerHTML = '';
+  const c = document.getElementById('entries');
+  c.innerHTML = '';
   entries.forEach((e, i) => {
     const div = document.createElement('div');
     div.className = 'buy-entry';
     div.innerHTML = `
-      <span class="entry-num">${i + 1}회차</span>
+      <span class="entry-num">${i+1}회차</span>
       <input class="input-field" type="number" placeholder="매수가 (원)"
-        value="${e.price || ''}" step="any"
-        oninput="updateEntry(${e.id},'price',this.value)" />
+        value="${e.price||''}" step="any" oninput="updateEntry(${e.id},'price',this.value)" />
       <input class="input-field" type="number" placeholder="수량"
-        value="${e.qty || ''}" step="any"
-        oninput="updateEntry(${e.id},'qty',this.value)" />
-      <button class="btn-del" onclick="removeEntry(${e.id})" title="삭제">×</button>
-    `;
-    container.appendChild(div);
+        value="${e.qty||''}" step="any" oninput="updateEntry(${e.id},'qty',this.value)" />
+      <button class="btn-del" onclick="removeEntry(${e.id})" title="삭제">×</button>`;
+    c.appendChild(div);
   });
 }
 
-/* ===== 계산 ===== */
 function calc() {
   const rows = entries.filter(e => e.price > 0 && e.qty > 0);
   const cur = parseFloat(document.getElementById('current-price').value) || 0;
   const addQty = parseFloat(document.getElementById('add-qty').value) || 0;
+  if (rows.length === 0) { document.getElementById('result-area').style.display = 'none'; return; }
 
-  if (rows.length === 0) {
-    document.getElementById('result-area').style.display = 'none';
-    return;
-  }
-
-  const baseCost = rows.reduce((s, r) => s + r.price * r.qty, 0);
-  const baseQty  = rows.reduce((s, r) => s + r.qty, 0);
+  const baseCost = rows.reduce((s,r) => s + r.price*r.qty, 0);
+  const baseQty  = rows.reduce((s,r) => s + r.qty, 0);
   const baseAvg  = baseCost / baseQty;
-
-  const addCost   = addQty > 0 && cur > 0 ? cur * addQty : 0;
+  const addCost  = addQty > 0 && cur > 0 ? cur * addQty : 0;
   const finalCost = baseCost + addCost;
   const finalQty  = baseQty + (addQty > 0 ? addQty : 0);
   const finalAvg  = finalCost / finalQty;
 
   document.getElementById('result-area').style.display = '';
-
-  // 평균단가
   document.getElementById('r-avg').textContent = fmtPrice(finalAvg) + '원';
   const avgSub = document.getElementById('r-avg-sub');
   if (addQty > 0 && cur > 0) {
     const diff = ((finalAvg - baseAvg) / baseAvg) * 100;
-    avgSub.textContent = '기존 ' + fmtPrice(baseAvg) + '원 → ' + (diff >= 0 ? '+' : '') + diff.toFixed(2) + '%';
+    avgSub.textContent = '기존 ' + fmtPrice(baseAvg) + '원 → ' + (diff>=0?'+':'') + diff.toFixed(2) + '%';
   } else {
     avgSub.textContent = rows.length > 1 ? rows.length + '회 매수 평균' : '';
   }
-
-  // 총금액·수량
   document.getElementById('r-total').textContent = fmtWon(finalCost);
   document.getElementById('r-total-sub').textContent = addCost > 0 ? '추가 ' + fmtWon(addCost) + ' 포함' : '';
   document.getElementById('r-qty').textContent = fmtQty(finalQty);
 
-  // 평가손익
-  const pnlEl  = document.getElementById('r-pnl');
+  const pnlEl = document.getElementById('r-pnl');
   const pnlSub = document.getElementById('r-pnl-sub');
   const bepSec = document.getElementById('bep-section');
 
@@ -264,8 +213,6 @@ function calc() {
     pnlEl.textContent = (pnlAmt >= 0 ? '+' : '') + fmtWon(pnlAmt);
     pnlEl.className = 'result-value ' + (pnlAmt >= 0 ? 'profit' : 'loss');
     pnlSub.textContent = pctStr(pnlPct) + ' · 평가 ' + fmtWon(evalAmt);
-
-    // BEP 바
     bepSec.style.display = '';
     const bepPct = ((finalAvg - cur) / cur) * 100;
     const maxVal = Math.max(Math.abs(pnlPct), Math.abs(bepPct), 5);
@@ -273,100 +220,62 @@ function calc() {
       <div class="bep-bar-row">
         <div class="bep-bar-label">손익률</div>
         <div class="bep-bar-track">
-          <div class="bep-bar-fill"
-            style="width:${p2w(Math.abs(pnlPct),maxVal)}%;background:${pnlAmt>=0?'#16a34a':'#dc2626'}">
-            ${pctStr(pnlPct)}
-          </div>
+          <div class="bep-bar-fill" style="width:${p2w(Math.abs(pnlPct),maxVal)}%;background:${pnlAmt>=0?'#16a34a':'#dc2626'}">${pctStr(pnlPct)}</div>
         </div>
       </div>
       <div class="bep-bar-row">
         <div class="bep-bar-label">BEP까지</div>
         <div class="bep-bar-track">
-          <div class="bep-bar-fill"
-            style="width:${p2w(Math.abs(bepPct),maxVal)}%;background:${bepPct<=0?'#16a34a':'#2563eb'}">
-            ${bepPct<=0 ? '이미 수익' : '+'+bepPct.toFixed(2)+'% 필요'}
-          </div>
+          <div class="bep-bar-fill" style="width:${p2w(Math.abs(bepPct),maxVal)}%;background:${bepPct<=0?'#16a34a':'#2563eb'}">${bepPct<=0?'이미 수익':'+'+bepPct.toFixed(2)+'% 필요'}</div>
         </div>
-      </div>
-    `;
-
+      </div>`;
     saveHistory({ rows, cur, addQty, finalAvg, finalCost, finalQty, pnlPct });
     renderHistory();
-
   } else {
-    pnlEl.textContent = '-';
-    pnlEl.className = 'result-value';
+    pnlEl.textContent = '-'; pnlEl.className = 'result-value';
     pnlSub.textContent = '현재가를 입력하면 손익이 계산됩니다';
     bepSec.style.display = 'none';
   }
 
-  // 상세 테이블
   const tbody = document.getElementById('r-tbody');
   tbody.innerHTML = '';
   rows.forEach((r, i) => {
-    const cost   = r.price * r.qty;
+    const cost = r.price * r.qty;
     const weight = (cost / finalCost * 100).toFixed(1);
     const rowPnl = cur > 0 ? ((cur - r.price) / r.price * 100) : null;
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td>${i+1}회차</td>
-      <td>${fmtPrice(r.price)}원</td>
-      <td>${fmtQty(r.qty)}</td>
-      <td>${fmtWon(cost)}</td>
-      <td>${weight}%</td>
-      <td>${rowPnl !== null
-        ? `<span class="${rowPnl>0?'pct-pos':rowPnl<0?'pct-neg':'pct-zero'}">${pctStr(rowPnl)}</span>`
-        : '-'}</td>
-    `;
+    tr.innerHTML = `<td>${i+1}회차</td><td>${fmtPrice(r.price)}원</td><td>${fmtQty(r.qty)}</td><td>${fmtWon(cost)}</td><td>${weight}%</td>
+      <td>${rowPnl!==null?`<span class="${rowPnl>0?'pct-pos':rowPnl<0?'pct-neg':'pct-zero'}">${pctStr(rowPnl)}</span>`:'-'}</td>`;
     tbody.appendChild(tr);
   });
-
   if (addQty > 0 && cur > 0) {
     const tr = document.createElement('tr');
     tr.className = 'add-row';
-    tr.innerHTML = `
-      <td>추가매수</td>
-      <td>${fmtPrice(cur)}원</td>
-      <td>${fmtQty(addQty)}</td>
-      <td>${fmtWon(addCost)}</td>
-      <td>${(addCost/finalCost*100).toFixed(1)}%</td>
-      <td><span style="color:var(--primary);font-size:11px;font-weight:600">예정</span></td>
-    `;
+    tr.innerHTML = `<td>추가매수</td><td>${fmtPrice(cur)}원</td><td>${fmtQty(addQty)}</td><td>${fmtWon(addCost)}</td><td>${(addCost/finalCost*100).toFixed(1)}%</td><td><span style="color:var(--primary);font-size:11px;font-weight:600">예정</span></td>`;
     tbody.appendChild(tr);
   }
 }
 
-/* ===== 최근 기록 ===== */
 function saveHistory(data) {
   let list = loadHistoryRaw();
   const item = {
     id: Date.now(),
-    time: new Date().toLocaleString('ko-KR', { month:'2-digit', day:'2-digit', hour:'2-digit', minute:'2-digit' }),
-    avgPrice: data.finalAvg,
-    totalCost: data.finalCost,
-    totalQty: data.finalQty,
-    curPrice: data.cur,
-    pnlPct: data.pnlPct,
+    time: new Date().toLocaleString('ko-KR',{month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}),
+    avgPrice: data.finalAvg, totalCost: data.finalCost, totalQty: data.finalQty,
+    curPrice: data.cur, pnlPct: data.pnlPct,
     rowCount: data.rows.length + (data.addQty > 0 ? 1 : 0),
-    rows: data.rows.map(r => ({ price: r.price, qty: r.qty })),
-    addQty: data.addQty,
+    rows: data.rows.map(r=>({price:r.price,qty:r.qty})), addQty: data.addQty,
   };
-  list = list.filter(h =>
-    !(Math.abs(h.avgPrice - item.avgPrice) < 0.01 && Math.abs(h.curPrice - item.curPrice) < 0.01)
-  );
+  list = list.filter(h => !(Math.abs(h.avgPrice-item.avgPrice)<0.01 && Math.abs(h.curPrice-item.curPrice)<0.01));
   list.unshift(item);
   if (list.length > MAX_HISTORY) list = list.slice(0, MAX_HISTORY);
   try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e) {}
 }
-
-function loadHistoryRaw() {
-  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); } catch(e) { return []; }
-}
-
+function loadHistoryRaw() { try { return JSON.parse(localStorage.getItem(HISTORY_KEY)||'[]'); } catch(e) { return []; } }
 function renderHistory() {
   const list = loadHistoryRaw();
-  const sec  = document.getElementById('history-section');
-  const el   = document.getElementById('history-list');
+  const sec = document.getElementById('history-section');
+  const el  = document.getElementById('history-list');
   if (list.length === 0) { sec.style.display = 'none'; return; }
   sec.style.display = '';
   el.innerHTML = '';
@@ -375,74 +284,64 @@ function renderHistory() {
     div.className = 'history-item';
     div.innerHTML = `
       <div class="history-main" onclick="restoreHistory(${h.id})">
-        <div class="history-title">
-          평균단가 ${fmtPrice(h.avgPrice)}원
-          <span style="font-size:11px;color:var(--gray-400);font-weight:400;margin-left:6px">${h.rowCount}회 매수</span>
-        </div>
+        <div class="history-title">평균단가 ${fmtPrice(h.avgPrice)}원 <span style="font-size:11px;color:var(--text-muted);font-weight:400;margin-left:6px">${h.rowCount}회 매수</span></div>
         <div class="history-sub">총 ${fmtWon(h.totalCost)} · 현재가 ${fmtPrice(h.curPrice)}원</div>
       </div>
-      <span class="history-pnl ${h.pnlPct>=0?'pos':'neg'}" onclick="restoreHistory(${h.id})">
-        ${h.pnlPct>=0?'+':''}${h.pnlPct.toFixed(2)}%
-      </span>
+      <span class="history-pnl ${h.pnlPct>=0?'pos':'neg'}" onclick="restoreHistory(${h.id})">${h.pnlPct>=0?'+':''}${h.pnlPct.toFixed(2)}%</span>
       <span class="history-time" onclick="restoreHistory(${h.id})">${h.time}</span>
-      <button class="history-del" onclick="deleteHistory(${h.id})" title="삭제">×</button>
-    `;
+      <button class="history-del" onclick="deleteHistory(${h.id})" title="삭제">×</button>`;
     el.appendChild(div);
   });
 }
-
 function restoreHistory(id) {
   const h = loadHistoryRaw().find(x => x.id === id);
   if (!h) return;
-  entries = [];
-  idSeq = 0;
-  h.rows.forEach(r => {
-    const id = ++idSeq;
-    entries.push({ id, price: r.price, qty: r.qty });
-  });
+  entries = []; idSeq = 0;
+  h.rows.forEach(r => { const id=++idSeq; entries.push({id,price:r.price,qty:r.qty}); });
   renderEntries();
   document.getElementById('current-price').value = h.curPrice || '';
   document.getElementById('add-qty').value = h.addQty > 0 ? h.addQty : '';
   calc();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  window.scrollTo({top:0,behavior:'smooth'});
 }
-
 function deleteHistory(id) {
   const list = loadHistoryRaw().filter(h => h.id !== id);
   try { localStorage.setItem(HISTORY_KEY, JSON.stringify(list)); } catch(e) {}
   renderHistory();
 }
-
 function clearHistory() {
   if (!confirm('최근 기록을 모두 삭제할까요?')) return;
   try { localStorage.removeItem(HISTORY_KEY); } catch(e) {}
   renderHistory();
 }
 
-/* ===== 포맷 유틸 ===== */
 function fmtWon(n) {
-  const abs = Math.abs(n), sign = n < 0 ? '-' : '';
-  if (abs >= 100000000) return sign + (abs/100000000).toFixed(2) + '억원';
-  if (abs >= 10000)     return sign + Math.round(abs/10000).toLocaleString() + '만원';
-  return sign + Math.round(abs).toLocaleString() + '원';
+  const abs=Math.abs(n), sign=n<0?'-':'';
+  if(abs>=100000000) return sign+(abs/100000000).toFixed(2)+'억원';
+  if(abs>=10000) return sign+Math.round(abs/10000).toLocaleString()+'만원';
+  return sign+Math.round(abs).toLocaleString()+'원';
 }
 function fmtPrice(n) {
-  if (n >= 100000000) return (n/100000000).toFixed(4).replace(/\.?0+$/,'') + '억';
-  if (n >= 10000)     return (n/10000).toFixed(2).replace(/\.?0+$/,'') + '만';
-  return n.toLocaleString(undefined, { maximumFractionDigits: 2 });
+  if(n>=100000000) return (n/100000000).toFixed(4).replace(/\.?0+$/,'')+'억';
+  if(n>=10000) return (n/10000).toFixed(2).replace(/\.?0+$/,'')+'만';
+  return n.toLocaleString(undefined,{maximumFractionDigits:2});
 }
-function fmtQty(n) {
-  const s = n.toFixed(8).replace(/\.?0+$/, '');
-  return s.includes('.') ? s : Number(s).toLocaleString();
-}
-function pctStr(n) { return (n >= 0 ? '+' : '') + n.toFixed(2) + '%'; }
-function p2w(v, max) { return Math.min(v / max * 100, 100).toFixed(1); }
+function fmtQty(n) { const s=n.toFixed(8).replace(/\.?0+$/,''); return s.includes('.')?s:Number(s).toLocaleString(); }
+function pctStr(n) { return (n>=0?'+':'')+n.toFixed(2)+'%'; }
+function p2w(v,max) { return Math.min(v/max*100,100).toFixed(1); }
 
-/* ===== 초기화 ===== */
-addEntry();
-addEntry();
-renderHistory();
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  document.getElementById('dark-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+});
+
+addEntry(); addEntry(); renderHistory();
 </script>
-
 </body>
 </html>

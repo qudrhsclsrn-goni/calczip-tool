@@ -1,0 +1,36 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+      <a href="cookie.html">쿠키 정책</a>
+      <a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">
+      모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
+      중요한 결정 전 반드시 전문가와 확인하세요.<br>
+      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+    </p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+(function() {
+  const saved = localStorage.getItem('calczip-theme');
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const theme = saved || (prefersDark ? 'dark' : 'light');
+  document.documentElement.setAttribute('data-theme', theme);
+  document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('dark-btn');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  });
+})();
+</script>
