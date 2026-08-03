@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>분할매수 계산기 - CalcZip</title>
+  <meta name="description" content="주식·코인 분할매수 전략을 계산하세요. 목표 평균단가와 투자금액을 입력하면 회차별 매수 수량과 금액을 자동 계산합니다." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .strategy-tabs { display:flex; gap:6px; margin-bottom:18px; background:var(--surface-2); padding:4px; border-radius:var(--radius-sm); }
+    .strategy-tab { flex:1; padding:8px 4px; border:none; background:none; border-radius:var(--radius-sm); font-size:12px; font-weight:500; color:var(--text-muted); cursor:pointer; transition:all 0.15s; font-family:var(--font); line-height:1.3; }
+    .strategy-tab.active { background:var(--card-bg); color:var(--primary); box-shadow:var(--shadow); }
+    .split-row { display:grid; grid-template-columns:2fr 2fr 2fr 2fr 1fr; gap:8px; align-items:center; margin-bottom:6px; }
+    .split-row.header { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+    .split-row input { padding:8px 10px; border:1px solid var(--border); border-radius:var(--radius-sm); font-size:13px; background:var(--input-bg); color:var(--text-primary); font-family:var(--font); outline:none; width:100%; }
+    .split-row input:focus { border-color:var(--primary); }
+    .split-row input[readonly] { background:var(--surface-2); color:var(--text-secondary); cursor:default; }
+    .split-num { font-size:12px; color:var(--text-muted); text-align:center; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>분할매수 계산기</span></nav>
+    <h1 class="page-title">분할매수 계산기</h1>
+    <p class="page-desc">주식·코인을 나눠서 살 때 회차별 매수 가격과 수량을 자동 계산해드립니다.</p>
+    <div class="ad-banner">광고 영역 (728×90)</div>
+
+    <div class="calc-card">
+      <!-- 전략 탭 -->
+      <div class="strategy-tabs">
+        <button class="strategy-tab active" onclick="setStrategy('equal_amount')">금액 균등<br><span style="font-size:10px;font-weight:400">매회 같은 금액</span></button>
+        <button class="strategy-tab" onclick="setStrategy('equal_qty')">수량 균등<br><span style="font-size:10px;font-weight:400">매회 같은 수량</span></button>
+        <button class="strategy-tab" onclick="setStrategy('price_drop')">하락 비례<br><span style="font-size:10px;font-weight:400">하락폭만큼 추가</span></button>
+        <button class="strategy-tab" onclick="setStrategy('custom')">직접 입력<br><span style="font-size:10px;font-weight:400">가격·수량 직접</span></button>
+      </div>
+
+      <div class="input-row" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">1회차 매수가 <span class="sub">(원)</span></label>
+          <input class="input-field" type="number" id="first-price" placeholder="예: 50,000" oninput="calc()" />
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">분할 횟수</label>
+          <select class="input-field" id="split-count" onchange="calc()">
+            <option value="2">2회</option>
+            <option value="3">3회</option>
+            <option value="4" selected>4회</option>
+            <option value="5">5회</option>
+            <option value="6">6회</option>
+            <option value="8">8회</option>
+            <option value="10">10회</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="input-row" id="strategy-inputs">
+        <div class="input-group" style="margin:0" id="total-budget-wrap">
+          <label class="input-label">총 예산 <span class="sub">(원)</span></label>
+          <input class="input-field" type="number" id="total-budget" placeholder="예: 2,000,000" oninput="calc()" />
+        </div>
+        <div class="input-group" style="margin:0" id="drop-rate-wrap" style="display:none">
+          <label class="input-label">회차당 하락률 <span class="sub">(%)</span></label>
+          <input class="input-field" type="number" id="drop-rate" placeholder="예: 5" value="5" step="0.5" oninput="calc()" />
+        </div>
+      </div>
+    </div>
+
+    <!-- 직접입력 테이블 -->
+    <div class="calc-card" id="custom-table" style="display:none">
+      <div class="section-title">회차별 직접 입력</div>
+      <div class="split-row header">
+        <span>매수가 (원)</span><span>수량</span><span>금액</span><span>누적금액</span><span></span>
+      </div>
+      <div id="custom-rows"></div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result-area" style="display:none">
+      <div class="calc-card">
+        <div class="result-grid">
+          <div class="result-card highlight">
+            <div class="result-label">평균단가</div>
+            <div class="result-value" id="r-avg">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">총 투자금액</div>
+            <div class="result-value" id="r-total">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">총 수량</div>
+            <div class="result-value" id="r-qty">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">손익분기가</div>
+            <div class="result-value" id="r-bep">-</div>
+            <div class="result-sub">= 평균단가</div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+        <div class="section-title">회차별 매수 계획</div>
+        <div style="overflow-x:auto">
+          <table class="result-table">
+            <thead><tr><th>회차</th><th>매수가</th><th>수량</th><th>매수금액</th><th>누적금액</th><th>비중</th></tr></thead>
+            <tbody id="r-tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- BEP 바 -->
+        <div class="divider"></div>
+        <div class="section-title">회차별 평균단가 변화</div>
+        <div id="avg-bars"></div>
+      </div>
+    </div>
+
+    <div class="ad-banner ad-banner-tall">광고 영역 (300×250)</div>
+    <div>
+      <div class="section-title">관련 계산기</div>
+      <div class="related-grid">
+        <a href="stock-add.html" class="related-card"><div class="r-icon">📉</div>물타기 계산기</a>
+        <a href="profit.html" class="related-card"><div class="r-icon">📈</div>수익률 계산기</a>
+        <a href="compound.html" class="related-card"><div class="r-icon">💰</div>복리 계산기</a>
+        <a href="savings.html" class="related-card"><div class="r-icon">🐷</div>적금·예금</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a><a href="cookie.html">쿠키 정책</a><a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>중요한 결정 전 반드시 전문가와 확인하세요.</p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+let strategy = 'equal_amount';
+let customData = [];
+
+function setStrategy(s) {
+  strategy = s;
+  document.querySelectorAll('.strategy-tab').forEach((b,i) => {
+    b.classList.toggle('active',
+      (i===0&&s==='equal_amount')||(i===1&&s==='equal_qty')||
+      (i===2&&s==='price_drop')||(i===3&&s==='custom'));
+  });
+  const dropWrap = document.getElementById('drop-rate-wrap');
+  const budgetWrap = document.getElementById('total-budget-wrap');
+  const customTable = document.getElementById('custom-table');
+
+  dropWrap.style.display   = s === 'price_drop' ? '' : 'none';
+  budgetWrap.style.display = s === 'custom' ? 'none' : '';
+  customTable.style.display = s === 'custom' ? '' : 'none';
+
+  if (s === 'custom') renderCustomRows();
+  calc();
+}
+
+function renderCustomRows() {
+  const n = parseInt(document.getElementById('split-count').value);
+  while (customData.length < n) customData.push({ price: 0, qty: 0 });
+  customData = customData.slice(0, n);
+  const container = document.getElementById('custom-rows');
+  container.innerHTML = '';
+  let cumTotal = 0;
+  customData.forEach((row, i) => {
+    const amt = row.price * row.qty;
+    cumTotal += amt;
+    const div = document.createElement('div');
+    div.className = 'split-row';
+    div.innerHTML = `
+      <input type="number" placeholder="매수가" value="${row.price||''}" step="any"
+        oninput="updateCustom(${i},'price',this.value)" />
+      <input type="number" placeholder="수량" value="${row.qty||''}" step="any"
+        oninput="updateCustom(${i},'qty',this.value)" />
+      <input type="number" readonly value="${amt ? Math.round(amt).toLocaleString('ko-KR') : ''}" placeholder="-" />
+      <input type="number" readonly value="${cumTotal ? Math.round(cumTotal).toLocaleString('ko-KR') : ''}" placeholder="-" />
+      <span class="split-num">${i+1}회</span>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function updateCustom(i, field, val) {
+  customData[i][field] = parseFloat(val) || 0;
+  renderCustomRows();
+  calc();
+}
+
+function calc() {
+  const firstPrice = parseFloat(document.getElementById('first-price').value) || 0;
+  const n = parseInt(document.getElementById('split-count').value);
+
+  if (strategy === 'custom') {
+    const rows = customData.filter(r => r.price > 0 && r.qty > 0);
+    if (rows.length === 0) { document.getElementById('result-area').style.display='none'; return; }
+    renderResult(rows.map(r => ({ price: r.price, qty: r.qty })));
+    return;
+  }
+
+  if (!firstPrice) { document.getElementById('result-area').style.display='none'; return; }
+
+  const budget = parseFloat(document.getElementById('total-budget').value) || 0;
+  const dropRate = parseFloat(document.getElementById('drop-rate').value) || 5;
+
+  let rows = [];
+
+  if (strategy === 'equal_amount') {
+    if (!budget) { document.getElementById('result-area').style.display='none'; return; }
+    const amtPerRound = budget / n;
+    for (let i = 0; i < n; i++) {
+      const price = firstPrice * Math.pow(1 - dropRate/100, i);
+      const qty   = amtPerRound / price;
+      rows.push({ price, qty });
+    }
+  } else if (strategy === 'equal_qty') {
+    if (!budget) { document.getElementById('result-area').style.display='none'; return; }
+    const totalQty = budget / firstPrice;
+    const qtyPerRound = totalQty / n;
+    for (let i = 0; i < n; i++) {
+      const price = firstPrice * Math.pow(1 - dropRate/100, i);
+      rows.push({ price, qty: qtyPerRound });
+    }
+  } else if (strategy === 'price_drop') {
+    if (!budget) { document.getElementById('result-area').style.display='none'; return; }
+    const amtPerRound = budget / n;
+    for (let i = 0; i < n; i++) {
+      const price = firstPrice * Math.pow(1 - dropRate/100, i);
+      const qty   = amtPerRound / price;
+      rows.push({ price, qty });
+    }
+  }
+
+  renderResult(rows);
+}
+
+function renderResult(rows) {
+  const totalCost = rows.reduce((s,r) => s + r.price * r.qty, 0);
+  const totalQty  = rows.reduce((s,r) => s + r.qty, 0);
+  const avgPrice  = totalCost / totalQty;
+
+  document.getElementById('result-area').style.display = '';
+  document.getElementById('r-avg').textContent   = fmtWon(avgPrice);
+  document.getElementById('r-total').textContent = fmtWon(totalCost);
+  document.getElementById('r-qty').textContent   = fmtQty(totalQty);
+  document.getElementById('r-bep').textContent   = fmtWon(avgPrice);
+
+  const tbody = document.getElementById('r-tbody');
+  tbody.innerHTML = '';
+  let cumCost = 0, cumQty = 0;
+  const barContainer = document.getElementById('avg-bars');
+  barContainer.innerHTML = '';
+
+  rows.forEach((r, i) => {
+    const amt = r.price * r.qty;
+    cumCost += amt; cumQty += r.qty;
+    const runAvg = cumCost / cumQty;
+    const weight = (amt / totalCost * 100).toFixed(1);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${i+1}회차</td>
+      <td>${fmtWon(r.price)}</td>
+      <td>${fmtQty(r.qty)}</td>
+      <td>${fmtWon(amt)}</td>
+      <td>${fmtWon(cumCost)}</td>
+      <td>${weight}%</td>
+    `;
+    tbody.appendChild(tr);
+
+    // 누적 평균단가 바
+    const pct = (runAvg / rows[0].price * 100).toFixed(1);
+    const bar = document.createElement('div');
+    bar.className = 'bep-bar-row';
+    bar.innerHTML = `
+      <div class="bep-bar-label" style="width:50px">${i+1}회 후</div>
+      <div class="bep-bar-track">
+        <div class="bep-bar-fill" style="width:${Math.min(pct,100)}%;background:var(--primary)">
+          ${fmtWon(runAvg)}
+        </div>
+      </div>
+    `;
+    barContainer.appendChild(bar);
+  });
+}
+
+function fmtWon(n) {
+  const sign = n < 0 ? '-' : '';
+  return sign + Math.round(Math.abs(n)).toLocaleString('ko-KR') + '원';
+}
+function fmtQty(n) {
+  const s = n.toFixed(8).replace(/\.?0+$/, '');
+  return s.includes('.') ? s : Number(s).toLocaleString('ko-KR');
+}
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dark-btn').textContent =
+    document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  document.getElementById('drop-rate-wrap').style.display = 'none';
+});
+</script>
+</body>
+</html>

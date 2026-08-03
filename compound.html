@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>복리 계산기 - CalcZip</title>
+  <meta name="description" content="원금, 연 수익률, 기간을 입력하면 복리 수익을 자동 계산. 월 적립식 복리도 지원. 연도별 자산 증가 확인." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .result-big { font-size:30px; font-weight:800; letter-spacing:-1px; color:var(--primary); }
+    .year-table-wrap { max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .year-table-wrap::-webkit-scrollbar { width:4px; }
+    .year-table-wrap::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:2px; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>복리 계산기</span></nav>
+    <h1 class="page-title">복리 계산기</h1>
+    <p class="page-desc">원금과 수익률을 입력하면 복리 효과를 바로 계산해드립니다.</p>
+    <div class="ad-banner">광고 영역 (728×90)</div>
+
+    <div class="calc-card">
+      <div class="input-row" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">초기 원금 <span class="sub">(원)</span></label>
+          <input class="input-field" type="number" id="principal" placeholder="예: 10,000,000" oninput="calc()" />
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">월 추가 적립 <span class="sub">(원, 없으면 0)</span></label>
+          <input class="input-field" type="number" id="monthly" placeholder="예: 500,000" value="0" oninput="calc()" />
+        </div>
+      </div>
+      <div class="input-row" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">연 수익률 <span class="sub">(%)</span></label>
+          <input class="input-field" type="number" id="rate" placeholder="예: 7" step="0.1" oninput="calc()" />
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">투자 기간 <span class="sub">(년)</span></label>
+          <input class="input-field" type="number" id="years" placeholder="예: 10" oninput="calc()" />
+        </div>
+      </div>
+      <!-- 빠른 선택 -->
+      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+        <span style="font-size:12px;color:var(--text-muted);align-self:center">기간:</span>
+        <button class="btn-period" onclick="setYears(5)">5년</button>
+        <button class="btn-period" onclick="setYears(10)">10년</button>
+        <button class="btn-period" onclick="setYears(20)">20년</button>
+        <button class="btn-period" onclick="setYears(30)">30년</button>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap">
+        <span style="font-size:12px;color:var(--text-muted);align-self:center">수익률:</span>
+        <button class="btn-period" onclick="setRate(3)">3%</button>
+        <button class="btn-period" onclick="setRate(5)">5%</button>
+        <button class="btn-period" onclick="setRate(7)">7%</button>
+        <button class="btn-period" onclick="setRate(10)">10%</button>
+        <button class="btn-period" onclick="setRate(15)">15%</button>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result-area" style="display:none">
+      <div class="calc-card">
+        <div style="text-align:center;padding:8px 0 20px">
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">최종 자산</div>
+          <div class="result-big" id="r-final">-</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:6px" id="r-sub"></div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">총 투자 원금</div>
+            <div class="result-value" id="r-principal">-</div>
+          </div>
+          <div class="result-card highlight">
+            <div class="result-label">복리 수익</div>
+            <div class="result-value profit" id="r-profit">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">수익률</div>
+            <div class="result-value profit" id="r-pct">-</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">72법칙 (2배 기간)</div>
+            <div class="result-value" id="r-72">-</div>
+          </div>
+        </div>
+
+        <!-- 원금/수익 바 -->
+        <div class="divider"></div>
+        <div class="section-title">원금 vs 복리 수익</div>
+        <div style="height:22px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-2);margin-bottom:6px">
+          <div id="bar-p" style="background:#2563eb;transition:width 0.4s;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff"></div>
+          <div id="bar-i" style="background:#16a34a;transition:width 0.4s;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff"></div>
+        </div>
+        <div style="display:flex;gap:16px;font-size:12px">
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#2563eb;display:inline-block"></span><span style="color:var(--text-muted)">원금</span></span>
+          <span style="display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;border-radius:50%;background:#16a34a;display:inline-block"></span><span style="color:var(--text-muted)">복리 수익</span></span>
+        </div>
+
+        <!-- 연도별 테이블 -->
+        <div class="divider"></div>
+        <div class="section-title">연도별 자산 증가</div>
+        <div class="year-table-wrap">
+          <table class="result-table">
+            <thead><tr><th>년차</th><th>연말 자산</th><th>총 납입 원금</th><th>누적 수익</th><th>수익률</th></tr></thead>
+            <tbody id="r-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="ad-banner ad-banner-tall">광고 영역 (300×250)</div>
+    <div>
+      <div class="section-title">관련 계산기</div>
+      <div class="related-grid">
+        <a href="savings.html" class="related-card"><div class="r-icon">🐷</div>적금·예금</a>
+        <a href="loan.html" class="related-card"><div class="r-icon">🏦</div>대출 이자</a>
+        <a href="stock-add.html" class="related-card"><div class="r-icon">📉</div>물타기 계산기</a>
+        <a href="salary.html" class="related-card"><div class="r-icon">💼</div>연봉 실수령</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a><a href="cookie.html">쿠키 정책</a><a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.</p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+function setYears(y) { document.getElementById('years').value = y; calc(); }
+function setRate(r)  { document.getElementById('rate').value  = r; calc(); }
+
+function calc() {
+  const P = parseFloat(document.getElementById('principal').value) || 0;
+  const M = parseFloat(document.getElementById('monthly').value)   || 0;
+  const r = parseFloat(document.getElementById('rate').value)      || 0;
+  const Y = parseInt(document.getElementById('years').value)       || 0;
+  if (!P || !r || !Y) { document.getElementById('result-area').style.display='none'; return; }
+
+  const mr = r / 100 / 12;
+  let balance = P;
+  let totalPrincipal = P;
+  const rows = [];
+
+  for (let y = 1; y <= Y; y++) {
+    for (let m = 0; m < 12; m++) {
+      balance = (balance + M) * (1 + mr);
+      totalPrincipal += M;
+    }
+    rows.push({ year: y, balance, totalPrincipal, profit: balance - totalPrincipal });
+  }
+
+  const final   = balance;
+  const totP    = totalPrincipal;
+  const profit  = final - totP;
+  const pct     = (profit / totP * 100).toFixed(1);
+  const rule72  = (72 / r).toFixed(1);
+
+  document.getElementById('result-area').style.display = '';
+  document.getElementById('r-final').textContent     = fmtWon(final);
+  document.getElementById('r-sub').textContent       = `${Y}년 후 · 연 ${r}% 복리`;
+  document.getElementById('r-principal').textContent = fmtWon(totP);
+  document.getElementById('r-profit').textContent    = '+' + fmtWon(profit);
+  document.getElementById('r-pct').textContent       = '+' + pct + '%';
+  document.getElementById('r-72').textContent        = rule72 + '년';
+
+  const pp = (totP / final * 100).toFixed(1);
+  const ip = (profit / final * 100).toFixed(1);
+  document.getElementById('bar-p').style.width = pp + '%';
+  document.getElementById('bar-p').textContent = pp + '%';
+  document.getElementById('bar-i').style.width = ip + '%';
+  document.getElementById('bar-i').textContent = ip + '%';
+
+  const tbody = document.getElementById('r-tbody');
+  tbody.innerHTML = '';
+  rows.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.year}년</td>
+      <td style="font-weight:600;color:var(--primary)">${fmtWon(row.balance)}</td>
+      <td>${fmtWon(row.totalPrincipal)}</td>
+      <td style="color:#16a34a">+${fmtWon(row.profit)}</td>
+      <td style="color:#16a34a">+${(row.profit/row.totalPrincipal*100).toFixed(1)}%</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function fmtWon(n) {
+  return Math.round(Math.abs(n)).toLocaleString('ko-KR') + '원';
+}
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dark-btn').textContent =
+    document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+  document.querySelectorAll('.btn-period').forEach(btn => {
+    btn.style.cssText = 'padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:none;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:var(--font);transition:all 0.15s';
+    btn.onmouseover = () => { btn.style.borderColor='var(--primary)'; btn.style.color='var(--primary)'; };
+    btn.onmouseout  = () => { btn.style.borderColor='var(--border)';  btn.style.color='var(--text-muted)'; };
+  });
+});
+</script>
+</body>
+</html>

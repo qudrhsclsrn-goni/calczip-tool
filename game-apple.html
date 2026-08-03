@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>사과 숫자 게임 - CalcZip</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .game-wrap { max-width:480px; margin:0 auto; }
+    .game-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .stat-row { display:flex; gap:8px; }
+    .stat-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:6px 14px; text-align:center; }
+    .stat-label { font-size:10px; color:var(--text-muted); }
+    .stat-val { font-size:18px; font-weight:800; color:var(--text-primary); }
+    .game-btn { padding:7px 14px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text-primary); font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
+    .game-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .timer-bar { height:6px; background:var(--surface-2); border-radius:3px; overflow:hidden; margin-bottom:10px; }
+    .timer-fill { height:100%; background:var(--primary); border-radius:3px; transition:width 0.1s linear; }
+    .apple-grid { display:grid; grid-template-columns:repeat(10,1fr); gap:3px; user-select:none; touch-action:none; position:relative; }
+    .apple { aspect-ratio:1; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; cursor:pointer; transition:all 0.15s; border:2px solid transparent; }
+    .apple.normal { background:#fef2f2; color:#dc2626; }
+    .apple.selected { background:#dc2626; color:#fff; border-color:#b91c1c; transform:scale(0.92); }
+    .apple.removed { background:transparent; color:transparent; cursor:default; pointer-events:none; }
+    .select-box { position:absolute; border:2px solid var(--primary); background:rgba(37,99,235,0.1); border-radius:4px; pointer-events:none; z-index:10; }
+    .sum-display { text-align:center; font-size:14px; font-weight:600; margin-bottom:8px; height:22px; }
+    .sum-ok { color:#16a34a; }
+    .sum-over { color:#dc2626; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>사과 숫자 게임</span></nav>
+    <div class="game-wrap">
+      <h1 style="font-size:22px;font-weight:800;margin-bottom:4px">🍎 사과 숫자 게임</h1>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px">드래그해서 합이 10이 되는 사과를 선택하세요!</p>
+      <div class="game-header">
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-label">점수</div><div class="stat-val" id="score">0</div></div>
+          <div class="stat-box"><div class="stat-label">남은칸</div><div class="stat-val" id="remain">0</div></div>
+          <div class="stat-box"><div class="stat-label">⏱</div><div class="stat-val" id="timer-val">120</div></div>
+        </div>
+        <button class="game-btn" onclick="newGame()">새 게임</button>
+      </div>
+      <div class="timer-bar"><div class="timer-fill" id="timer-fill" style="width:100%"></div></div>
+      <div class="sum-display" id="sum-display"></div>
+      <div id="apple-grid" class="apple-grid"></div>
+      <div id="result-msg" style="display:none;text-align:center;padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);margin-top:10px"></div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="section-title">다른 게임</div>
+      <div class="related-grid">
+        <a href="game-2048.html" class="related-card"><div class="r-icon">🔢</div>2048</a>
+        <a href="game-minesweeper.html" class="related-card"><div class="r-icon">💣</div>지뢰찾기</a>
+        <a href="game-memory.html" class="related-card"><div class="r-icon">🃏</div>카드 메모리</a>
+        <a href="game-snake.html" class="related-card"><div class="r-icon">🐍</div>스네이크</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links"><a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a></div>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+const ROWS=8,COLS=10,TIME=120;
+let grid,score,timeLeft,timerInterval,dragging=false,startCell=null,selected=[];
+
+function newGame() {
+  clearInterval(timerInterval);
+  grid=Array(ROWS).fill(null).map(()=>Array(COLS).fill(0).map(()=>Math.floor(Math.random()*9)+1));
+  score=0; timeLeft=TIME;
+  document.getElementById('score').textContent=0;
+  document.getElementById('result-msg').style.display='none';
+  document.getElementById('sum-display').textContent='';
+  updateRemain();
+  render();
+  timerInterval=setInterval(()=>{
+    timeLeft--;
+    document.getElementById('timer-val').textContent=timeLeft;
+    document.getElementById('timer-fill').style.width=(timeLeft/TIME*100)+'%';
+    if(timeLeft<=0){clearInterval(timerInterval);endGame();}
+  },1000);
+}
+
+function updateRemain() {
+  const cnt=grid.flat().filter(v=>v>0).length;
+  document.getElementById('remain').textContent=cnt;
+  if(cnt===0){clearInterval(timerInterval);endGame(true);}
+}
+
+function render() {
+  const el=document.getElementById('apple-grid');
+  el.innerHTML='';
+  grid.forEach((row,r)=>row.forEach((v,c)=>{
+    const div=document.createElement('div');
+    div.className='apple '+(v===0?'removed':'normal');
+    div.textContent=v>0?v:'';
+    div.dataset.r=r; div.dataset.c=c;
+    el.appendChild(div);
+  }));
+  setupDrag();
+}
+
+function setupDrag() {
+  const el=document.getElementById('apple-grid');
+  let box=null;
+
+  const getCell=(x,y)=>{
+    const cells=el.querySelectorAll('.apple:not(.removed)');
+    for(const cell of cells){
+      const rect=cell.getBoundingClientRect();
+      if(x>=rect.left&&x<=rect.right&&y>=rect.top&&y<=rect.bottom) return cell;
+    }
+    return null;
+  };
+
+  const getRect=(x1,y1,x2,y2)=>({ left:Math.min(x1,x2),top:Math.min(y1,y2),right:Math.max(x1,x2),bottom:Math.max(y1,y2) });
+
+  const getSelected=(sx,sy,ex,ey)=>{
+    const sel=[]; const rect=getRect(sx,sy,ex,ey);
+    el.querySelectorAll('.apple:not(.removed)').forEach(cell=>{
+      const cr=cell.getBoundingClientRect();
+      const cx=(cr.left+cr.right)/2, cy=(cr.top+cr.bottom)/2;
+      if(cx>=rect.left&&cx<=rect.right&&cy>=rect.top&&cy<=rect.bottom) sel.push(cell);
+    });
+    return sel;
+  };
+
+  const updateSelection=(sel)=>{
+    el.querySelectorAll('.apple').forEach(c=>c.classList.remove('selected'));
+    let sum=0; sel.forEach(c=>{c.classList.add('selected');sum+=parseInt(c.textContent)||0;});
+    const disp=document.getElementById('sum-display');
+    if(sel.length===0){disp.textContent='';return;}
+    disp.textContent='합계: '+sum+(sum===10?' ✓':'');
+    disp.className='sum-display '+(sum===10?'sum-ok':sum>10?'sum-over':'');
+  };
+
+  let sx,sy;
+  el.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('removed'))return;
+    dragging=true; sx=e.clientX; sy=e.clientY;
+    box=document.createElement('div'); box.className='select-box';
+    el.appendChild(box);
+  });
+  window.addEventListener('mousemove',e=>{
+    if(!dragging||!box)return;
+    const gr=el.getBoundingClientRect();
+    box.style.left=Math.min(sx,e.clientX)-gr.left+'px';
+    box.style.top=Math.min(sy,e.clientY)-gr.top+'px';
+    box.style.width=Math.abs(e.clientX-sx)+'px';
+    box.style.height=Math.abs(e.clientY-sy)+'px';
+    updateSelection(getSelected(sx,sy,e.clientX,e.clientY));
+  });
+  window.addEventListener('mouseup',e=>{
+    if(!dragging)return; dragging=false;
+    if(box){box.remove();box=null;}
+    const sel=getSelected(sx,sy,e.clientX,e.clientY);
+    const sum=sel.reduce((s,c)=>s+(parseInt(c.textContent)||0),0);
+    if(sum===10&&sel.length>0){
+      sel.forEach(c=>{grid[parseInt(c.dataset.r)][parseInt(c.dataset.c)]=0;});
+      score+=sel.length*10; document.getElementById('score').textContent=score;
+      render(); updateRemain();
+    } else {
+      el.querySelectorAll('.apple').forEach(c=>c.classList.remove('selected'));
+      document.getElementById('sum-display').textContent='';
+    }
+  });
+
+  // 터치
+  el.addEventListener('touchstart',e=>{
+    const t=e.touches[0]; sx=t.clientX; sy=t.clientY; dragging=true;
+    box=document.createElement('div');box.className='select-box';el.appendChild(box);
+  },{passive:true});
+  el.addEventListener('touchmove',e=>{
+    if(!dragging||!box)return;
+    const t=e.touches[0]; const gr=el.getBoundingClientRect();
+    box.style.left=Math.min(sx,t.clientX)-gr.left+'px';
+    box.style.top=Math.min(sy,t.clientY)-gr.top+'px';
+    box.style.width=Math.abs(t.clientX-sx)+'px';
+    box.style.height=Math.abs(t.clientY-sy)+'px';
+    updateSelection(getSelected(sx,sy,t.clientX,t.clientY));
+  },{passive:true});
+  el.addEventListener('touchend',e=>{
+    if(!dragging)return; dragging=false;
+    if(box){box.remove();box=null;}
+    const t=e.changedTouches[0];
+    const sel=getSelected(sx,sy,t.clientX,t.clientY);
+    const sum=sel.reduce((s,c)=>s+(parseInt(c.textContent)||0),0);
+    if(sum===10&&sel.length>0){
+      sel.forEach(c=>{grid[parseInt(c.dataset.r)][parseInt(c.dataset.c)]=0;});
+      score+=sel.length*10; document.getElementById('score').textContent=score;
+      render(); updateRemain();
+    } else {
+      el.querySelectorAll('.apple').forEach(c=>c.classList.remove('selected'));
+      document.getElementById('sum-display').textContent='';
+    }
+  });
+}
+
+function endGame(cleared=false) {
+  const el=document.getElementById('result-msg');
+  el.style.display='';
+  el.innerHTML=`<div style="font-size:22px;font-weight:800;margin-bottom:8px">${cleared?'🎉 완전 클리어!':'⏰ 시간 종료!'}</div><div style="font-size:15px;color:var(--text-muted);margin-bottom:12px">최종 점수: <strong>${score}점</strong></div><button class="game-btn" onclick="newGame()">다시 하기</button>`;
+}
+
+function toggleDark() {
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  localStorage.setItem('calczip-theme',isDark?'light':'dark');
+  document.getElementById('dark-btn').textContent=isDark?'🌙':'☀️';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dark-btn').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  newGame();
+});
+</script>
+</body>
+</html>

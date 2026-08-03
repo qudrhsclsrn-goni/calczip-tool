@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>카드 메모리 게임 - CalcZip</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .game-wrap { max-width:480px; margin:0 auto; }
+    .game-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+    .stat-row { display:flex; gap:8px; }
+    .stat-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:6px 14px; text-align:center; }
+    .stat-label { font-size:10px; color:var(--text-muted); }
+    .stat-val { font-size:18px; font-weight:800; color:var(--text-primary); }
+    .game-btn { padding:7px 14px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text-primary); font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
+    .game-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .diff-btns { display:flex; gap:6px; margin-bottom:14px; }
+    .diff-btn { padding:6px 12px; border:1px solid var(--border); border-radius:20px; background:none; font-size:12px; color:var(--text-muted); cursor:pointer; font-family:var(--font); transition:all 0.15s; }
+    .diff-btn.active { border-color:var(--primary); color:var(--primary); background:var(--highlight-bg); }
+    .card-grid { display:grid; gap:8px; }
+    .card { aspect-ratio:1; border-radius:8px; cursor:pointer; position:relative; transform-style:preserve-3d; transition:transform 0.35s; }
+    .card.flipped { transform:rotateY(180deg); }
+    .card.matched { transform:rotateY(180deg); opacity:0.7; cursor:default; }
+    .card-front, .card-back { position:absolute; inset:0; border-radius:8px; display:flex; align-items:center; justify-content:center; backface-visibility:hidden; }
+    .card-front { background:var(--primary); font-size:22px; transform:rotateY(180deg); }
+    .card-back  { background:var(--surface-2); border:2px solid var(--border); font-size:22px; }
+    .win-msg { text-align:center; padding:20px; background:var(--card-bg); border:1px solid var(--border); border-radius:var(--radius); margin-top:10px; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>카드 메모리</span></nav>
+    <div class="game-wrap">
+      <h1 style="font-size:22px;font-weight:800;margin-bottom:4px">🃏 카드 메모리</h1>
+      <div class="diff-btns">
+        <button class="diff-btn active" onclick="setDiff(4)">4×4 (쉬움)</button>
+        <button class="diff-btn" onclick="setDiff(6)">6×6 (보통)</button>
+      </div>
+      <div class="game-header">
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-label">시도</div><div class="stat-val" id="tries">0</div></div>
+          <div class="stat-box"><div class="stat-label">맞춤</div><div class="stat-val" id="matched">0</div></div>
+          <div class="stat-box"><div class="stat-label">⏱</div><div class="stat-val" id="timer">0</div></div>
+        </div>
+        <button class="game-btn" onclick="newGame()">새 게임</button>
+      </div>
+      <div id="card-grid" class="card-grid"></div>
+      <div id="win-msg" class="win-msg" style="display:none"></div>
+    </div>
+    <div style="margin-top:20px">
+      <div class="section-title">다른 게임</div>
+      <div class="related-grid">
+        <a href="game-apple.html" class="related-card"><div class="r-icon">🍎</div>사과 게임</a>
+        <a href="game-2048.html" class="related-card"><div class="r-icon">🔢</div>2048</a>
+        <a href="game-minesweeper.html" class="related-card"><div class="r-icon">💣</div>지뢰찾기</a>
+        <a href="game-snake.html" class="related-card"><div class="r-icon">🐍</div>스네이크</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links"><a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a></div>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+const EMOJIS = ['🍎','🍊','🍋','🍇','🍓','🫐','🍒','🍑','🥝','🍍','🥭','🍌','🥥','🍉','🍈','🍏','🫒','🥑','🍆','🥕'];
+let gridSize=4, cards=[], flipped=[], matchedCount=0, tries=0, locked=false, timerInterval, elapsed=0;
+
+function setDiff(n) {
+  gridSize=n;
+  document.querySelectorAll('.diff-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&n===4)||(i===1&&n===6)));
+  newGame();
+}
+
+function newGame() {
+  clearInterval(timerInterval); elapsed=0; tries=0; matchedCount=0; locked=false; flipped=[];
+  document.getElementById('tries').textContent='0';
+  document.getElementById('matched').textContent='0';
+  document.getElementById('timer').textContent='0';
+  document.getElementById('win-msg').style.display='none';
+  const total = gridSize*gridSize;
+  const pairs = EMOJIS.slice(0,total/2);
+  cards = [...pairs,...pairs].sort(()=>Math.random()-0.5);
+  const grid = document.getElementById('card-grid');
+  grid.style.gridTemplateColumns = `repeat(${gridSize},1fr)`;
+  grid.innerHTML = '';
+  cards.forEach((emoji,i)=>{
+    const div = document.createElement('div');
+    div.className='card'; div.dataset.idx=i;
+    div.innerHTML=`<div class="card-front">${emoji}</div><div class="card-back">❓</div>`;
+    div.addEventListener('click',()=>flipCard(i,div));
+    grid.appendChild(div);
+  });
+  timerInterval = setInterval(()=>{ elapsed++; document.getElementById('timer').textContent=elapsed; },1000);
+}
+
+function flipCard(idx, el) {
+  if(locked||el.classList.contains('flipped')||el.classList.contains('matched')) return;
+  el.classList.add('flipped');
+  flipped.push({idx,el});
+  if(flipped.length===2) {
+    locked=true; tries++;
+    document.getElementById('tries').textContent=tries;
+    const [a,b]=flipped;
+    if(cards[a.idx]===cards[b.idx]) {
+      setTimeout(()=>{ a.el.classList.add('matched'); b.el.classList.add('matched'); flipped=[]; locked=false; matchedCount++; document.getElementById('matched').textContent=matchedCount; if(matchedCount===cards.length/2) win(); },400);
+    } else {
+      setTimeout(()=>{ a.el.classList.remove('flipped'); b.el.classList.remove('flipped'); flipped=[]; locked=false; },900);
+    }
+  }
+}
+
+function win() {
+  clearInterval(timerInterval);
+  const msg = document.getElementById('win-msg');
+  msg.style.display='';
+  msg.innerHTML=`<div style="font-size:24px;font-weight:800;margin-bottom:8px">🎉 완성!</div><div style="font-size:14px;color:var(--text-muted);margin-bottom:12px">${elapsed}초 · ${tries}번 시도</div><button class="game-btn" onclick="newGame()">다시 하기</button>`;
+}
+
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark?'light':'dark');
+  localStorage.setItem('calczip-theme', isDark?'light':'dark');
+  document.getElementById('dark-btn').textContent = isDark?'🌙':'☀️';
+}
+document.addEventListener('DOMContentLoaded', ()=>{
+  document.getElementById('dark-btn').textContent = document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  newGame();
+});
+</script>
+</body>
+</html>

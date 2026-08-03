@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>테트리스 - CalcZip 게임</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .game-wrap { max-width:460px; margin:0 auto; }
+    .game-layout { display:flex; gap:12px; align-items:flex-start; justify-content:center; }
+    canvas { border-radius:8px; display:block; }
+    .side-panel { display:flex; flex-direction:column; gap:10px; min-width:90px; }
+    .panel-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:10px; text-align:center; }
+    .panel-label { font-size:11px; color:var(--text-muted); margin-bottom:4px; }
+    .panel-val { font-size:20px; font-weight:800; color:var(--text-primary); }
+    .game-btn { width:100%; padding:8px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text-primary); font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
+    .game-btn:hover { border-color:var(--primary); color:var(--primary); }
+    .d-pad { display:grid; grid-template-columns:repeat(3,44px); gap:4px; margin:10px auto 0; width:fit-content; }
+    .d-btn { width:44px; height:44px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface-2); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+    .d-btn:active { background:var(--primary); color:#fff; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>테트리스</span></nav>
+    <div class="game-wrap">
+      <h1 style="font-size:22px;font-weight:800;margin-bottom:12px">⬛ 테트리스</h1>
+      <div class="game-layout">
+        <canvas id="canvas" width="200" height="400"></canvas>
+        <div class="side-panel">
+          <div class="panel-box"><div class="panel-label">점수</div><div class="panel-val" id="score">0</div></div>
+          <div class="panel-box"><div class="panel-label">줄</div><div class="panel-val" id="lines">0</div></div>
+          <div class="panel-box"><div class="panel-label">레벨</div><div class="panel-val" id="level">1</div></div>
+          <div class="panel-box"><div class="panel-label">다음</div><canvas id="next-canvas" width="80" height="80"></canvas></div>
+          <button class="game-btn" onclick="startGame()">시작</button>
+          <button class="game-btn" onclick="togglePause()">일시정지</button>
+        </div>
+      </div>
+      <div class="d-pad">
+        <div></div>
+        <button class="d-btn" onclick="rotate()">↺</button>
+        <div></div>
+        <button class="d-btn" onclick="move(-1)">◀</button>
+        <button class="d-btn" onclick="drop()">▼▼</button>
+        <button class="d-btn" onclick="move(1)">▶</button>
+        <div></div>
+        <button class="d-btn" onclick="moveDown()">▼</button>
+        <div></div>
+      </div>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">← → 이동 · ↑ 회전 · ↓ 내리기 · Space 즉시 드롭</p>
+    </div>
+    <div style="margin-top:20px">
+      <div class="section-title">다른 게임</div>
+      <div class="related-grid">
+        <a href="game-apple.html" class="related-card"><div class="r-icon">🍎</div>사과 게임</a>
+        <a href="game-2048.html" class="related-card"><div class="r-icon">🔢</div>2048</a>
+        <a href="game-snake.html" class="related-card"><div class="r-icon">🐍</div>스네이크</a>
+        <a href="game-minesweeper.html" class="related-card"><div class="r-icon">💣</div>지뢰찾기</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links"><a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a></div>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+<script>
+const COLS=10,ROWS=20,CELL=20;
+const COLORS=['','#ef4444','#f97316','#eab308','#22c55e','#3b82f6','#8b5cf6','#ec4899'];
+const PIECES=[
+  [[1,1,1,1]],
+  [[2,2],[2,2]],
+  [[0,3,0],[3,3,3]],
+  [[4,0],[4,0],[4,4]],
+  [[0,5],[0,5],[5,5]],
+  [[6,0],[6,6],[0,6]],
+  [[0,7],[7,7],[7,0]]
+];
+
+const canvas=document.getElementById('canvas'),ctx=canvas.getContext('2d');
+const ncanvas=document.getElementById('next-canvas'),nctx=ncanvas.getContext('2d');
+let board,cur,curX,curY,next,score,lines,level,interval,running=false,paused=false;
+
+function newPiece() {
+  const shape = PIECES[Math.floor(Math.random()*PIECES.length)];
+  return { shape, color: shape[0].find(v=>v) };
+}
+
+function startGame() {
+  clearInterval(interval);
+  board=Array(ROWS).fill(null).map(()=>Array(COLS).fill(0));
+  score=0;lines=0;level=1;running=true;paused=false;
+  next=newPiece(); spawnPiece();
+  updateUI();
+  interval=setInterval(tick,500);
+}
+
+function spawnPiece() {
+  cur=next; next=newPiece();
+  curX=Math.floor((COLS-cur.shape[0].length)/2); curY=0;
+  if(collide(0,0,cur.shape)){gameOver();return;}
+  drawNext();
+}
+
+function tick() { if(!paused) moveDown(); }
+
+function moveDown() { if(!running||paused)return; if(!collide(0,1,cur.shape)) curY++; else lock(); draw(); }
+function move(dx) { if(!running||paused)return; if(!collide(dx,0,cur.shape)) curX+=dx; draw(); }
+function rotate() {
+  if(!running||paused)return;
+  const rot=cur.shape[0].map((_,i)=>cur.shape.map(r=>r[i]).reverse());
+  if(!collide(0,0,rot)) cur.shape=rot; draw();
+}
+function drop() {
+  if(!running||paused)return;
+  while(!collide(0,1,cur.shape)) curY++;
+  lock(); draw();
+}
+function togglePause() { if(!running)return; paused=!paused; }
+
+function collide(dx,dy,shape) {
+  for(let r=0;r<shape.length;r++) for(let c=0;c<shape[r].length;c++) {
+    if(!shape[r][c])continue;
+    const nx=curX+c+dx,ny=curY+r+dy;
+    if(nx<0||nx>=COLS||ny>=ROWS||ny<0)return true;
+    if(board[ny][nx])return true;
+  }
+  return false;
+}
+
+function lock() {
+  cur.shape.forEach((row,r)=>row.forEach((v,c)=>{ if(v)board[curY+r][curX+c]=v; }));
+  let cleared=0;
+  for(let r=ROWS-1;r>=0;r--) { if(board[r].every(v=>v)){board.splice(r,1);board.unshift(Array(COLS).fill(0));cleared++;r++;} }
+  if(cleared){lines+=cleared;score+=cleared===4?800*level:cleared*100*level;level=Math.floor(lines/10)+1;clearInterval(interval);interval=setInterval(tick,Math.max(100,500-level*40));updateUI();}
+  spawnPiece();
+}
+
+function gameOver() {
+  running=false; clearInterval(interval);
+  ctx.fillStyle='rgba(0,0,0,0.6)';ctx.fillRect(0,0,200,400);
+  ctx.fillStyle='#fff';ctx.font='bold 22px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillText('GAME OVER',100,180);ctx.font='16px sans-serif';ctx.fillText('점수: '+score,100,210);
+}
+
+function updateUI() {
+  document.getElementById('score').textContent=score;
+  document.getElementById('lines').textContent=lines;
+  document.getElementById('level').textContent=level;
+}
+
+function draw() {
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  ctx.fillStyle=isDark?'#1a1d27':'#f9fafb'; ctx.fillRect(0,0,200,400);
+  // grid
+  ctx.strokeStyle=isDark?'#2e3347':'#e5e7eb'; ctx.lineWidth=0.5;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){ctx.strokeRect(c*CELL,r*CELL,CELL,CELL);}
+  // board
+  board.forEach((row,r)=>row.forEach((v,c)=>{ if(v){ctx.fillStyle=COLORS[v];ctx.fillRect(c*CELL+1,r*CELL+1,CELL-2,CELL-2);} }));
+  // current
+  cur.shape.forEach((row,r)=>row.forEach((v,c)=>{ if(v){ctx.fillStyle=COLORS[v];ctx.fillRect((curX+c)*CELL+1,(curY+r)*CELL+1,CELL-2,CELL-2);} }));
+  // ghost
+  let gy=curY; while(!collide(0,gy-curY+1,cur.shape))gy++;
+  ctx.globalAlpha=0.25;
+  cur.shape.forEach((row,r)=>row.forEach((v,c)=>{ if(v){ctx.fillStyle=COLORS[v];ctx.fillRect((curX+c)*CELL+1,(gy+r)*CELL+1,CELL-2,CELL-2);} }));
+  ctx.globalAlpha=1;
+}
+
+function drawNext() {
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  nctx.fillStyle=isDark?'#1a1d27':'#f9fafb'; nctx.fillRect(0,0,80,80);
+  const s=next.shape, ox=Math.floor((4-s[0].length)/2)*16, oy=Math.floor((4-s.length)/2)*16;
+  s.forEach((row,r)=>row.forEach((v,c)=>{ if(v){nctx.fillStyle=COLORS[v];nctx.fillRect(ox+c*16+1,oy+r*16+1,14,14);} }));
+}
+
+document.addEventListener('keydown',e=>{
+  const map={ArrowLeft:()=>move(-1),ArrowRight:()=>move(1),ArrowUp:rotate,ArrowDown:moveDown,' ':drop};
+  if(map[e.key]){e.preventDefault();map[e.key]();}
+});
+
+function toggleDark() {
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme', isDark?'light':'dark');
+  localStorage.setItem('calczip-theme', isDark?'light':'dark');
+  document.getElementById('dark-btn').textContent=isDark?'🌙':'☀️';
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dark-btn').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
+  ctx.fillStyle=document.documentElement.getAttribute('data-theme')==='dark'?'#1a1d27':'#f9fafb';
+  ctx.fillRect(0,0,200,400);
+  ctx.fillStyle='#9ca3af';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText('시작 버튼을 누르세요',100,200);
+});
+</script>
+</body>
+</html>

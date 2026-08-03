@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>전월세 전환 계산기 - CalcZip</title>
+  <meta name="description" content="전세를 월세로, 월세를 전세로 전환할 때 적정 금액을 계산하세요. 전월세 전환율 기준 자동 계산." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .mode-tabs { display:flex; gap:6px; margin-bottom:18px; background:var(--surface-2); padding:4px; border-radius:var(--radius-sm); }
+    .mode-tab { flex:1; padding:9px 4px; border:none; background:none; border-radius:var(--radius-sm); font-size:13px; font-weight:500; color:var(--text-muted); cursor:pointer; transition:all 0.15s; font-family:var(--font); }
+    .mode-tab.active { background:var(--card-bg); color:var(--primary); box-shadow:var(--shadow); }
+    .result-big { font-size:30px; font-weight:800; letter-spacing:-1px; color:var(--primary); }
+    .info-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:12px 14px; font-size:12px; color:var(--text-muted); line-height:1.7; margin-top:10px; }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav"><a href="index.html">홈</a></nav>
+      <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <main class="main-content">
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>전월세 전환 계산기</span></nav>
+    <h1 class="page-title">전월세 전환 계산기</h1>
+    <p class="page-desc">전세↔월세 전환 시 적정 금액을 계산하고 비교해보세요.</p>
+    <div class="ad-banner">광고 영역 (728×90)</div>
+
+    <div class="calc-card">
+      <div class="mode-tabs">
+        <button class="mode-tab active" onclick="setMode('to-monthly')">전세 → 월세</button>
+        <button class="mode-tab" onclick="setMode('to-jeonse')">월세 → 전세</button>
+        <button class="mode-tab" onclick="setMode('compare')">전세 vs 월세 비교</button>
+      </div>
+
+      <!-- 전세→월세 -->
+      <div id="mode-to-monthly">
+        <div class="input-row" style="margin-bottom:12px">
+          <div class="input-group" style="margin:0">
+            <label class="input-label">전세 보증금 <span class="sub">(원)</span></label>
+            <input class="input-field" type="number" id="jeonse-amt" placeholder="예: 300,000,000" oninput="calc()" />
+          </div>
+          <div class="input-group" style="margin:0">
+            <label class="input-label">월세 보증금 <span class="sub">(원)</span></label>
+            <input class="input-field" type="number" id="monthly-deposit" placeholder="예: 50,000,000" oninput="calc()" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">전월세 전환율 <span class="sub">(%)</span>
+            <span style="font-size:11px;background:var(--highlight-bg);color:var(--primary);padding:2px 7px;border-radius:10px;margin-left:6px">법정 상한 6%</span>
+          </label>
+          <input class="input-field" type="number" id="conv-rate" value="6" step="0.1" oninput="calc()" />
+        </div>
+      </div>
+
+      <!-- 월세→전세 -->
+      <div id="mode-to-jeonse" style="display:none">
+        <div class="input-row" style="margin-bottom:12px">
+          <div class="input-group" style="margin:0">
+            <label class="input-label">월세 보증금 <span class="sub">(원)</span></label>
+            <input class="input-field" type="number" id="m-deposit" placeholder="예: 50,000,000" oninput="calc()" />
+          </div>
+          <div class="input-group" style="margin:0">
+            <label class="input-label">월세 <span class="sub">(원/월)</span></label>
+            <input class="input-field" type="number" id="m-rent" placeholder="예: 800,000" oninput="calc()" />
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">전월세 전환율 <span class="sub">(%)</span></label>
+          <input class="input-field" type="number" id="conv-rate2" value="6" step="0.1" oninput="calc()" />
+        </div>
+      </div>
+
+      <!-- 비교 -->
+      <div id="mode-compare" style="display:none">
+        <div class="input-row" style="margin-bottom:12px">
+          <div class="input-group" style="margin:0">
+            <label class="input-label">전세 보증금 <span class="sub">(원)</span></label>
+            <input class="input-field" type="number" id="cmp-jeonse" placeholder="예: 300,000,000" oninput="calc()" />
+          </div>
+          <div class="input-group" style="margin:0">
+            <label class="input-label">대출 금리 <span class="sub">(%)</span></label>
+            <input class="input-field" type="number" id="cmp-loan-rate" placeholder="예: 4.0" value="4.0" step="0.1" oninput="calc()" />
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="input-group" style="margin:0">
+            <label class="input-label">월세 보증금 <span class="sub">(원)</span></label>
+            <input class="input-field" type="number" id="cmp-deposit" placeholder="예: 50,000,000" oninput="calc()" />
+          </div>
+          <div class="input-group" style="margin:0">
+            <label class="input-label">월세 <span class="sub">(원/월)</span></label>
+            <input class="input-field" type="number" id="cmp-rent" placeholder="예: 800,000" oninput="calc()" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결과 -->
+    <div id="result-area" style="display:none">
+      <div class="calc-card">
+        <div style="text-align:center;padding:8px 0 18px">
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px" id="r-label">결과</div>
+          <div class="result-big" id="r-main">-</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:6px" id="r-sub"></div>
+        </div>
+        <div class="divider"></div>
+        <div id="r-detail"></div>
+      </div>
+    </div>
+
+    <div class="ad-banner ad-banner-tall">광고 영역 (300×250)</div>
+    <div>
+      <div class="section-title">관련 계산기</div>
+      <div class="related-grid">
+        <a href="loan.html" class="related-card"><div class="r-icon">🏦</div>대출 이자 계산기</a>
+        <a href="salary.html" class="related-card"><div class="r-icon">💼</div>연봉 실수령</a>
+        <a href="savings.html" class="related-card"><div class="r-icon">🐷</div>적금·예금</a>
+        <a href="compound.html" class="related-card"><div class="r-icon">💰</div>복리 계산기</a>
+      </div>
+    </div>
+  </main>
+  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a><a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a><a href="cookie.html">쿠키 정책</a><a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>중요한 결정 전 반드시 전문가와 확인하세요.</p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+let mode = 'to-monthly';
+
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.mode-tab').forEach((b,i) => {
+    b.classList.toggle('active',
+      (i===0&&m==='to-monthly')||(i===1&&m==='to-jeonse')||(i===2&&m==='compare'));
+  });
+  ['to-monthly','to-jeonse','compare'].forEach(id => {
+    document.getElementById('mode-'+id).style.display = id===m ? '' : 'none';
+  });
+  document.getElementById('result-area').style.display = 'none';
+  calc();
+}
+
+function calc() {
+  if (mode === 'to-monthly') calcToMonthly();
+  else if (mode === 'to-jeonse') calcToJeonse();
+  else calcCompare();
+}
+
+function calcToMonthly() {
+  const jeonse  = parseFloat(document.getElementById('jeonse-amt').value) || 0;
+  const deposit = parseFloat(document.getElementById('monthly-deposit').value) || 0;
+  const rate    = parseFloat(document.getElementById('conv-rate').value) || 6;
+  if (!jeonse || !rate) { hide(); return; }
+  const diff      = jeonse - deposit;
+  const monthlyRent = diff * (rate / 100) / 12;
+
+  show();
+  document.getElementById('r-label').textContent = '적정 월세';
+  document.getElementById('r-main').textContent  = fmtWon(monthlyRent) + '/월';
+  document.getElementById('r-sub').textContent   = `전환율 ${rate}% 기준`;
+  document.getElementById('r-detail').innerHTML  = `
+    <div class="result-grid">
+      <div class="result-card"><div class="result-label">전환 대상 금액</div><div class="result-value">${fmtWon(diff)}</div><div class="result-sub">전세금 - 월세 보증금</div></div>
+      <div class="result-card"><div class="result-label">연 임대료</div><div class="result-value">${fmtWon(monthlyRent*12)}</div></div>
+    </div>
+    <div class="info-box">📌 전월세 전환율 법정 상한: <strong>6%</strong> (주택임대차보호법 기준)<br>실제 계약 시 집주인과 협의한 전환율을 입력하세요.</div>
+  `;
+}
+
+function calcToJeonse() {
+  const deposit = parseFloat(document.getElementById('m-deposit').value) || 0;
+  const rent    = parseFloat(document.getElementById('m-rent').value)    || 0;
+  const rate    = parseFloat(document.getElementById('conv-rate2').value) || 6;
+  if (!rent || !rate) { hide(); return; }
+  const jeonse = deposit + (rent * 12 / (rate / 100));
+
+  show();
+  document.getElementById('r-label').textContent = '전세 환산 보증금';
+  document.getElementById('r-main').textContent  = fmtWon(jeonse);
+  document.getElementById('r-sub').textContent   = `전환율 ${rate}% 기준`;
+  document.getElementById('r-detail').innerHTML  = `
+    <div class="result-grid">
+      <div class="result-card"><div class="result-label">월세 보증금</div><div class="result-value">${fmtWon(deposit)}</div></div>
+      <div class="result-card"><div class="result-label">월세 전환분</div><div class="result-value">${fmtWon(rent*12/(rate/100))}</div><div class="result-sub">연 ${fmtWon(rent*12)} ÷ ${rate}%</div></div>
+    </div>
+    <div class="info-box">📌 전세 환산가 = 보증금 + (월세 × 12 ÷ 전환율)</div>
+  `;
+}
+
+function calcCompare() {
+  const jeonse   = parseFloat(document.getElementById('cmp-jeonse').value)    || 0;
+  const loanRate = parseFloat(document.getElementById('cmp-loan-rate').value) || 0;
+  const deposit  = parseFloat(document.getElementById('cmp-deposit').value)   || 0;
+  const rent     = parseFloat(document.getElementById('cmp-rent').value)      || 0;
+  if (!jeonse || !rent) { hide(); return; }
+
+  // 전세 비용: 전세금에 대한 기회비용(대출이자)
+  const jeonseMonthCost = jeonse * (loanRate / 100) / 12;
+  // 월세 실질 비용: 월세 + 보증금 기회비용
+  const depositCost = deposit * (loanRate / 100) / 12;
+  const monthlyTotalCost = rent + depositCost;
+  const diff = monthlyTotalCost - jeonseMonthCost;
+  const cheaper = diff > 0 ? '전세' : '월세';
+
+  show();
+  document.getElementById('r-label').textContent = cheaper + '가 더 유리';
+  document.getElementById('r-main').textContent  = '월 ' + fmtWon(Math.abs(diff)) + ' 절약';
+  document.getElementById('r-sub').textContent   = `대출금리 ${loanRate}% 기준 기회비용 계산`;
+  document.getElementById('r-detail').innerHTML  = `
+    <div class="result-grid">
+      <div class="result-card ${diff>0?'highlight':''}">
+        <div class="result-label">전세 월 비용</div>
+        <div class="result-value">${fmtWon(jeonseMonthCost)}</div>
+        <div class="result-sub">기회비용 (대출이자 기준)</div>
+      </div>
+      <div class="result-card ${diff<=0?'highlight':''}">
+        <div class="result-label">월세 월 비용</div>
+        <div class="result-value">${fmtWon(monthlyTotalCost)}</div>
+        <div class="result-sub">월세 + 보증금 기회비용</div>
+      </div>
+    </div>
+    <div class="info-box">📌 기회비용이란 해당 금액을 다른 곳에 투자했을 때 얻을 수 있는 수익을 의미합니다.<br>전세자금 대출이 있다면 실제 대출금리를 입력하세요.</div>
+  `;
+}
+
+function show() { document.getElementById('result-area').style.display = ''; }
+function hide() { document.getElementById('result-area').style.display = 'none'; }
+function fmtWon(n) { return Math.round(Math.abs(n)).toLocaleString('ko-KR') + '원'; }
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('dark-btn').textContent =
+    document.documentElement.getAttribute('data-theme') === 'dark' ? '☀️' : '🌙';
+});
+</script>
+</body>
+</html>
