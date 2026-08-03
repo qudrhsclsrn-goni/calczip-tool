@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>적금·예금 계산기 - CalcZip</title>
+  <meta name="description" content="적금·예금 만기 수령액, 세후 이자를 자동 계산. 일반과세·비과세·세금우대·ISA 선택 가능. 단리·복리 방식 지원." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .product-tabs { display:flex; gap:6px; margin-bottom:18px; background:var(--surface-2); padding:4px; border-radius:var(--radius-sm); }
+    .product-tab { flex:1; padding:8px 4px; border:none; background:none; border-radius:var(--radius-sm); font-size:13px; font-weight:500; color:var(--text-muted); cursor:pointer; transition:all 0.15s; font-family:var(--font); }
+    .product-tab.active { background:var(--card-bg); color:var(--primary); box-shadow:var(--shadow); }
+
+    .tax-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:4px; }
+    .tax-option { border:1px solid var(--border); border-radius:var(--radius-sm); padding:10px 12px; cursor:pointer; transition:all 0.15s; }
+    .tax-option.selected { border-color:var(--primary); background:var(--highlight-bg); }
+    .tax-option input[type=radio] { display:none; }
+    .tax-option-title { font-size:13px; font-weight:600; color:var(--text-primary); margin-bottom:2px; }
+    .tax-option-rate { font-size:12px; color:var(--primary); font-weight:600; }
+    .tax-option-desc { font-size:11px; color:var(--text-muted); margin-top:2px; line-height:1.4; }
+
+    .interest-type { display:flex; gap:6px; }
+    .int-btn { flex:1; padding:7px; border:1px solid var(--border); border-radius:var(--radius-sm); background:none; font-size:13px; color:var(--text-muted); cursor:pointer; font-family:var(--font); transition:all 0.15s; }
+    .int-btn.active { border-color:var(--primary); color:var(--primary); background:var(--highlight-bg); font-weight:500; }
+
+    .result-big { font-size:28px; font-weight:800; letter-spacing:-1px; }
+    .breakdown-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+    .breakdown-row:last-child { border-bottom:none; }
+    .breakdown-label { color:var(--text-muted); }
+    .breakdown-val { font-weight:500; color:var(--text-primary); }
+    .breakdown-val.minus { color:#dc2626; }
+    .breakdown-val.plus  { color:#16a34a; }
+
+    .month-table-wrap { max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); }
+    .month-table-wrap::-webkit-scrollbar { width:4px; }
+    .month-table-wrap::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:2px; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="index.html">홈</a>
+        <a href="privacy.html">개인정보처리방침</a>
+      </nav>
+      <button class="dark-toggle" onclick="toggleDark()" title="다크모드 전환" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
+
+  <main class="main-content">
+    <nav class="breadcrumb">
+      <a href="index.html">홈</a><span>›</span><span>적금·예금 계산기</span>
+    </nav>
+
+    <h1 class="page-title">적금·예금 계산기</h1>
+    <p class="page-desc">만기 수령액과 세후 이자를 바로 계산해드립니다. 비과세·세금우대·ISA 선택 가능.</p>
+
+    <div class="ad-banner"><!-- AdSense 728x90 -->광고 영역 (728×90)</div>
+
+    <!-- 입력 카드 -->
+    <div class="calc-card">
+
+      <!-- 상품 탭 -->
+      <div class="product-tabs">
+        <button class="product-tab active" onclick="setProduct('savings')">🐷 적금</button>
+        <button class="product-tab" onclick="setProduct('deposit')">🏦 예금</button>
+      </div>
+
+      <!-- 금액 입력 -->
+      <div class="input-row" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label" id="amount-label">월 납입금 <span class="sub">(원)</span></label>
+          <input class="input-field" type="number" id="amount" placeholder="예: 300,000" oninput="calc()" />
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">연 금리 <span class="sub">(%)</span></label>
+          <input class="input-field" type="number" id="rate" placeholder="예: 3.5" step="0.01" oninput="calc()" />
+        </div>
+      </div>
+
+      <!-- 기간 -->
+      <div class="input-group">
+        <label class="input-label">가입 기간 <span class="sub">(개월)</span></label>
+        <input class="input-field" type="number" id="period" placeholder="예: 12" oninput="calc()" />
+        <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <span style="font-size:12px;color:var(--text-muted);align-self:center">빠른 선택:</span>
+          <button class="btn-period" onclick="setPeriod(6)">6개월</button>
+          <button class="btn-period" onclick="setPeriod(12)">1년</button>
+          <button class="btn-period" onclick="setPeriod(24)">2년</button>
+          <button class="btn-period" onclick="setPeriod(36)">3년</button>
+          <button class="btn-period" onclick="setPeriod(60)">5년</button>
+        </div>
+      </div>
+
+      <!-- 이자 계산 방식 (적금만) -->
+      <div class="input-group" id="int-type-wrap">
+        <label class="input-label">이자 계산 방식</label>
+        <div class="interest-type">
+          <button class="int-btn active" onclick="setIntType('simple')">단리</button>
+          <button class="int-btn" onclick="setIntType('compound')">복리</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 세금 유형 -->
+      <div class="input-group" style="margin-bottom:0">
+        <label class="input-label">세금 유형</label>
+        <div class="tax-options">
+
+          <label class="tax-option selected" onclick="selectTax(this,'normal')">
+            <input type="radio" name="tax" value="normal" checked />
+            <div class="tax-option-title">일반과세</div>
+            <div class="tax-option-rate">이자소득세 15.4%</div>
+            <div class="tax-option-desc">소득세 14% + 지방소득세 1.4%</div>
+          </label>
+
+          <label class="tax-option" onclick="selectTax(this,'exempt')">
+            <input type="radio" name="tax" value="exempt" />
+            <div class="tax-option-title">비과세</div>
+            <div class="tax-option-rate">세금 0%</div>
+            <div class="tax-option-desc">농특세 포함 완전 면세<br>(조합원 등 자격 필요)</div>
+          </label>
+
+          <label class="tax-option" onclick="selectTax(this,'preferential')">
+            <input type="radio" name="tax" value="preferential" />
+            <div class="tax-option-title">세금우대</div>
+            <div class="tax-option-rate">농특세 1.4%</div>
+            <div class="tax-option-desc">저축은행·상호금융 등<br>(한도 3,000만원)</div>
+          </label>
+
+          <label class="tax-option" onclick="selectTax(this,'isa')">
+            <input type="radio" name="tax" value="isa" />
+            <div class="tax-option-title">ISA 계좌</div>
+            <div class="tax-option-rate">순이익 200만원 비과세</div>
+            <div class="tax-option-desc">초과분 9.9% 분리과세<br>(서민형 400만원)</div>
+          </label>
+
+        </div>
+
+        <!-- ISA 유형 선택 (ISA 선택 시만 표시) -->
+        <div id="isa-options" style="display:none;margin-top:10px">
+          <label class="input-label">ISA 유형</label>
+          <div class="interest-type">
+            <button class="int-btn active" onclick="setIsaType('general')">일반형<br><span style="font-size:11px">200만원 비과세</span></button>
+            <button class="int-btn" onclick="setIsaType('worker')">서민형<br><span style="font-size:11px">400만원 비과세</span></button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 결과 카드 -->
+    <div id="result-area" style="display:none">
+      <div class="calc-card">
+
+        <!-- 메인 결과 -->
+        <div style="text-align:center;padding:8px 0 20px">
+          <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">만기 수령액 (세후)</div>
+          <div class="result-big" id="r-final" style="color:var(--primary)">-</div>
+          <div style="font-size:13px;color:var(--text-muted);margin-top:6px" id="r-final-sub"></div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- 세부 내역 -->
+        <div class="section-title">수령액 내역</div>
+        <div id="breakdown"></div>
+
+        <!-- 원금 / 이자 바 -->
+        <div class="divider"></div>
+        <div class="section-title">원금 vs 이자</div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text-muted);margin-bottom:4px">
+            <span>원금 <strong id="bar-p-pct" style="color:var(--text-primary)"></strong></span>
+            <span>세후 이자 <strong id="bar-i-pct" style="color:var(--text-primary)"></strong></span>
+          </div>
+          <div style="height:20px;border-radius:6px;overflow:hidden;display:flex;background:var(--surface-2)">
+            <div id="bar-principal" style="background:#2563eb;transition:width 0.4s;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;min-width:0"></div>
+            <div id="bar-interest"  style="background:#16a34a;transition:width 0.4s;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;min-width:0"></div>
+          </div>
+        </div>
+
+        <!-- 월별 내역 (적금) -->
+        <div id="monthly-section">
+          <div class="divider"></div>
+          <div class="section-title">월별 납입 내역</div>
+          <div class="month-table-wrap">
+            <table class="result-table">
+              <thead><tr><th>회차</th><th>납입액</th><th>누적 원금</th><th>발생 이자</th><th>누적 이자</th></tr></thead>
+              <tbody id="monthly-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
+
+    <div>
+      <div class="section-title">관련 계산기</div>
+      <div class="related-grid">
+        <a href="loan.html" class="related-card"><div class="r-icon">🏦</div>대출 이자 계산기</a>
+        <a href="stock-add.html" class="related-card"><div class="r-icon">📉</div>물타기 계산기</a>
+        <a href="profit.html" class="related-card"><div class="r-icon">📈</div>수익률 계산기</a>
+        <a class="related-card"><div class="r-icon">💼</div>연봉 실수령</a>
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+      <a href="cookie.html">쿠키 정책</a>
+      <a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">
+      모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
+      중요한 결정 전 반드시 전문가와 확인하세요.<br>
+      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+    </p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+let currentProduct = 'savings'; // savings | deposit
+let currentIntType = 'simple';  // simple | compound
+let currentTax = 'normal';      // normal | exempt | preferential | isa
+let currentIsa = 'general';     // general | worker
+
+/* ===== 탭/옵션 전환 ===== */
+function setProduct(type) {
+  currentProduct = type;
+  document.querySelectorAll('.product-tab').forEach((b, i) => {
+    b.classList.toggle('active', (i===0&&type==='savings')||(i===1&&type==='deposit'));
+  });
+  document.getElementById('amount-label').innerHTML =
+    type === 'savings' ? '월 납입금 <span class="sub">(원)</span>' : '예치 원금 <span class="sub">(원)</span>';
+  document.getElementById('int-type-wrap').style.display = type === 'savings' ? '' : 'none';
+  document.getElementById('monthly-section').style.display = type === 'savings' ? '' : 'none';
+  document.getElementById('amount').placeholder = type === 'savings' ? '예: 300,000' : '예: 10,000,000';
+  calc();
+}
+
+function setIntType(type) {
+  currentIntType = type;
+  document.querySelectorAll('.int-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i===0&&type==='simple')||(i===1&&type==='compound'));
+  });
+  calc();
+}
+
+function selectTax(el, type) {
+  currentTax = type;
+  document.querySelectorAll('.tax-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('isa-options').style.display = type === 'isa' ? '' : 'none';
+  calc();
+}
+
+function setIsaType(type) {
+  currentIsa = type;
+  document.querySelectorAll('#isa-options .int-btn').forEach((b, i) => {
+    b.classList.toggle('active', (i===0&&type==='general')||(i===1&&type==='worker'));
+  });
+  calc();
+}
+
+function setPeriod(months) {
+  document.getElementById('period').value = months;
+  calc();
+}
+
+/* ===== 세금 계산 ===== */
+function calcTax(grossInterest) {
+  switch (currentTax) {
+    case 'normal':       return { tax: grossInterest * 0.154, rate: '15.4%', label: '일반과세 (15.4%)' };
+    case 'exempt':       return { tax: 0,                      rate: '0%',    label: '비과세' };
+    case 'preferential': return { tax: grossInterest * 0.014,  rate: '1.4%',  label: '세금우대 (농특세 1.4%)' };
+    case 'isa': {
+      const exemptLimit = currentIsa === 'worker' ? 4000000 : 2000000;
+      const taxable = Math.max(0, grossInterest - exemptLimit);
+      return { tax: taxable * 0.099, rate: currentIsa==='worker'?'400만원 비과세':'200만원 비과세', label: 'ISA (' + (currentIsa==='worker'?'서민형':'일반형') + ')' };
+    }
+  }
+}
+
+/* ===== 메인 계산 ===== */
+function calc() {
+  const amount = parseFloat(document.getElementById('amount').value) || 0;
+  const annualR = parseFloat(document.getElementById('rate').value) || 0;
+  const N = parseInt(document.getElementById('period').value) || 0;
+
+  if (!amount || !annualR || !N) {
+    document.getElementById('result-area').style.display = 'none';
+    return;
+  }
+
+  const r = annualR / 100 / 12;
+  let grossInterest = 0;
+  let totalPrincipal = 0;
+  let monthlyRows = [];
+
+  if (currentProduct === 'savings') {
+    // 적금: 매월 납입
+    totalPrincipal = amount * N;
+    let cumInterest = 0;
+
+    if (currentIntType === 'simple') {
+      // 단리: 각 회차별 납입금에 남은 기간만큼 이자
+      for (let i = 1; i <= N; i++) {
+        const months = N - i + 1;
+        const interest = amount * r * months;
+        cumInterest += interest;
+        monthlyRows.push({ month: i, payment: amount, cumPrincipal: amount*i, interest, cumInterest });
+      }
+      grossInterest = cumInterest;
+
+    } else {
+      // 복리: 매월 납입 후 복리 적용
+      let balance = 0;
+      let prevBalance = 0;
+      cumInterest = 0;
+      for (let i = 1; i <= N; i++) {
+        balance = (prevBalance + amount) * (1 + r);
+        const interest = balance - prevBalance - amount;
+        cumInterest += interest;
+        monthlyRows.push({ month: i, payment: amount, cumPrincipal: amount*i, interest, cumInterest });
+        prevBalance = balance;
+      }
+      grossInterest = cumInterest;
+    }
+
+  } else {
+    // 예금: 원금 일괄 예치
+    totalPrincipal = amount;
+    // 단리 기준 (예금은 보통 단리)
+    grossInterest = amount * (annualR / 100) * (N / 12);
+  }
+
+  const taxResult   = calcTax(grossInterest);
+  const netInterest = grossInterest - taxResult.tax;
+  const finalAmount = totalPrincipal + netInterest;
+
+  document.getElementById('result-area').style.display = '';
+
+  // 메인 수치
+  document.getElementById('r-final').textContent = fmtWon(finalAmount);
+  document.getElementById('r-final-sub').textContent =
+    currentProduct === 'savings'
+      ? `월 ${fmtWon(amount)} × ${N}개월`
+      : `원금 ${fmtWon(amount)} · ${N}개월`;
+
+  // 세부 내역
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = `
+    <div class="breakdown-row">
+      <span class="breakdown-label">${currentProduct==='savings'?'총 납입 원금':'예치 원금'}</span>
+      <span class="breakdown-val">${fmtWon(totalPrincipal)}</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">세전 이자</span>
+      <span class="breakdown-val plus">+${fmtWon(grossInterest)}</span>
+    </div>
+    <div class="breakdown-row">
+      <span class="breakdown-label">이자 세금 <span style="font-size:11px;color:var(--primary)">${taxResult.label}</span></span>
+      <span class="breakdown-val minus">-${fmtWon(taxResult.tax)}</span>
+    </div>
+    <div class="breakdown-row" style="font-weight:700;font-size:14px">
+      <span style="color:var(--text-primary)">세후 이자</span>
+      <span style="color:#16a34a">+${fmtWon(netInterest)}</span>
+    </div>
+    <div class="breakdown-row" style="font-weight:800;font-size:15px;border-bottom:none">
+      <span style="color:var(--text-primary)">만기 수령액</span>
+      <span style="color:var(--primary)">${fmtWon(finalAmount)}</span>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--text-muted);background:var(--surface-2);padding:8px 12px;border-radius:var(--radius-sm)">
+      📌 실효 수익률 (세후): <strong style="color:var(--primary)">${((netInterest/totalPrincipal)*100).toFixed(2)}%</strong>
+      &nbsp;·&nbsp; 연환산: <strong style="color:var(--primary)">${((netInterest/totalPrincipal)*(12/N)*100).toFixed(2)}%</strong>
+    </div>
+  `;
+
+  // 원금/이자 바
+  const total = totalPrincipal + netInterest;
+  const pPct = (totalPrincipal / total * 100).toFixed(1);
+  const iPct = (netInterest   / total * 100).toFixed(1);
+  document.getElementById('bar-p-pct').textContent = pPct + '%';
+  document.getElementById('bar-i-pct').textContent = iPct + '%';
+  document.getElementById('bar-principal').style.width = pPct + '%';
+  document.getElementById('bar-interest').style.width  = iPct + '%';
+
+  // 월별 내역 (적금만)
+  if (currentProduct === 'savings') {
+    const tbody = document.getElementById('monthly-body');
+    tbody.innerHTML = '';
+    monthlyRows.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.month}회</td>
+        <td>${fmtWon(row.payment)}</td>
+        <td>${fmtWon(row.cumPrincipal)}</td>
+        <td style="color:#16a34a">+${fmtWon(row.interest)}</td>
+        <td style="color:#16a34a">+${fmtWon(row.cumInterest)}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+/* ===== 유틸 ===== */
+function fmtWon(n) {
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  return sign + Math.round(abs).toLocaleString('ko-KR') + '원';
+}
+
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  document.getElementById('dark-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  document.querySelectorAll('.btn-period').forEach(btn => {
+    btn.style.cssText = 'padding:4px 10px;border:1px solid var(--border);border-radius:20px;background:none;font-size:12px;color:var(--text-muted);cursor:pointer;font-family:var(--font);transition:all 0.15s';
+    btn.onmouseover = () => { btn.style.borderColor='var(--primary)'; btn.style.color='var(--primary)'; };
+    btn.onmouseout  = () => { btn.style.borderColor='var(--border)';  btn.style.color='var(--text-muted)'; };
+  });
+});
+</script>
+
+</body>
+</html>

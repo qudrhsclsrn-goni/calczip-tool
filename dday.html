@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>D-day 계산기 - CalcZip</title>
+  <meta name="description" content="날짜를 입력하면 D-day를 자동 계산. 여러 개 등록, 저장, 관리 가능. 기념일·시험·여행 등 중요한 날을 한눈에 확인하세요." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
+  <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <style>
+    .dday-card {
+      background: var(--card-bg); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 20px; margin-bottom: 10px;
+      box-shadow: var(--shadow); transition: all 0.2s; position: relative;
+    }
+    .dday-card:hover { box-shadow: var(--shadow-md); }
+    .dday-card.past { opacity: 0.75; }
+
+    .dday-header { display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:12px; }
+    .dday-emoji { font-size:28px; line-height:1; flex-shrink:0; }
+    .dday-title-wrap { flex:1; min-width:0; }
+    .dday-name { font-size:15px; font-weight:700; color:var(--text-primary); margin-bottom:2px; }
+    .dday-date-str { font-size:12px; color:var(--text-muted); }
+    .dday-del { width:28px; height:28px; border:none; background:none; color:var(--text-muted); font-size:16px; cursor:pointer; border-radius:6px; display:flex; align-items:center; justify-content:center; flex-shrink:0; transition:all 0.15s; }
+    .dday-del:hover { background:#fef2f2; color:#ef4444; }
+
+    .dday-number { font-size:42px; font-weight:800; letter-spacing:-2px; line-height:1; }
+    .dday-number.future { color: var(--primary); }
+    .dday-number.today  { color: #16a34a; }
+    .dday-number.past   { color: var(--text-muted); }
+
+    .dday-label { font-size:13px; color:var(--text-muted); margin-top:4px; }
+    .dday-progress { margin-top:14px; }
+    .dday-progress-bar { height:6px; background:var(--surface-2); border-radius:3px; overflow:hidden; margin-top:6px; }
+    .dday-progress-fill { height:100%; border-radius:3px; transition:width 0.6s; }
+    .dday-progress-label { display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:4px; }
+
+    .dday-units { display:flex; gap:12px; margin-top:12px; flex-wrap:wrap; }
+    .dday-unit { text-align:center; background:var(--surface-2); border-radius:var(--radius-sm); padding:8px 12px; flex:1; min-width:60px; }
+    .dday-unit-num { font-size:18px; font-weight:700; color:var(--text-primary); }
+    .dday-unit-label { font-size:11px; color:var(--text-muted); margin-top:2px; }
+
+    /* 입력 폼 */
+    .add-form { background:var(--card-bg); border:1px dashed var(--border-2); border-radius:var(--radius); padding:20px; margin-bottom:20px; }
+    .emoji-grid { display:flex; gap:8px; flex-wrap:wrap; margin-top:8px; }
+    .emoji-btn { width:36px; height:36px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--input-bg); font-size:18px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
+    .emoji-btn.selected { border-color:var(--primary); background:var(--highlight-bg); }
+    .emoji-btn:hover { border-color:var(--primary); }
+
+    .toggle-form-btn { width:100%; padding:11px; border:1px dashed var(--border-2); border-radius:var(--radius); background:none; color:var(--text-muted); font-size:14px; font-weight:500; cursor:pointer; font-family:var(--font); transition:all 0.15s; margin-bottom:16px; }
+    .toggle-form-btn:hover { border-color:var(--primary); color:var(--primary); background:var(--highlight-bg); }
+
+    .sort-btns { display:flex; gap:6px; margin-bottom:14px; }
+    .sort-btn { padding:5px 12px; border:1px solid var(--border); border-radius:20px; background:none; font-size:12px; color:var(--text-muted); cursor:pointer; font-family:var(--font); transition:all 0.15s; }
+    .sort-btn.active { border-color:var(--primary); color:var(--primary); background:var(--highlight-bg); }
+
+    .empty-state { text-align:center; padding:40px 20px; color:var(--text-muted); }
+    .empty-icon { font-size:48px; margin-bottom:12px; }
+    .empty-text { font-size:14px; }
+
+    .today-highlight { background:linear-gradient(135deg,#dcfce7,#bbf7d0); border-color:#86efac; }
+    [data-theme="dark"] .today-highlight { background:linear-gradient(135deg,#14532d44,#14532d66); border-color:#16a34a; }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <div class="header-right">
+      <nav class="header-nav">
+        <a href="index.html">홈</a>
+        <a href="privacy.html">개인정보처리방침</a>
+      </nav>
+      <button class="dark-toggle" onclick="toggleDark()" title="다크모드 전환" id="dark-btn">🌙</button>
+    </div>
+  </div>
+</header>
+
+<div class="page-layout">
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
+
+  <main class="main-content">
+    <nav class="breadcrumb">
+      <a href="index.html">홈</a><span>›</span><span>D-day 계산기</span>
+    </nav>
+
+    <h1 class="page-title">D-day 계산기</h1>
+    <p class="page-desc">중요한 날을 등록하고 남은 날짜를 한눈에 확인하세요. 브라우저에 자동 저장됩니다.</p>
+
+    <div class="ad-banner"><!-- AdSense 728x90 -->광고 영역 (728×90)</div>
+
+    <!-- 추가 버튼 -->
+    <button class="toggle-form-btn" id="toggle-btn" onclick="toggleForm()">+ 새 D-day 추가</button>
+
+    <!-- 입력 폼 -->
+    <div class="add-form" id="add-form" style="display:none">
+      <div class="input-group">
+        <label class="input-label">이모지 선택</label>
+        <div class="emoji-grid" id="emoji-grid"></div>
+      </div>
+
+      <div class="input-row" style="margin-bottom:12px">
+        <div class="input-group" style="margin:0">
+          <label class="input-label">이름</label>
+          <input class="input-field" type="text" id="dday-name" placeholder="예: 수능, 결혼기념일" maxlength="20" />
+        </div>
+        <div class="input-group" style="margin:0">
+          <label class="input-label">날짜</label>
+          <input class="input-field" type="date" id="dday-date" />
+        </div>
+      </div>
+
+      <!-- 매년 반복 옵션 -->
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+        <input type="checkbox" id="repeat-yearly" style="width:16px;height:16px;cursor:pointer;accent-color:var(--primary)" />
+        <label for="repeat-yearly" style="font-size:13px;color:var(--text-secondary);cursor:pointer">매년 반복 (기념일용)</label>
+      </div>
+
+      <div style="display:flex;gap:8px">
+        <button onclick="addDday()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">추가하기</button>
+        <button onclick="toggleForm()" style="padding:10px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;color:var(--text-muted);font-size:14px;cursor:pointer;font-family:var(--font)">취소</button>
+      </div>
+    </div>
+
+    <!-- 정렬 -->
+    <div class="sort-btns" id="sort-btns" style="display:none">
+      <button class="sort-btn active" onclick="setSort('nearest')">가까운 순</button>
+      <button class="sort-btn" onclick="setSort('registered')">등록 순</button>
+      <button class="sort-btn" onclick="setSort('past')">지난 날 보기</button>
+    </div>
+
+    <!-- D-day 목록 -->
+    <div id="dday-list"></div>
+
+    <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
+
+    <div>
+      <div class="section-title">관련 계산기</div>
+      <div class="related-grid">
+        <a href="salary.html" class="related-card"><div class="r-icon">💼</div>연봉 실수령액</a>
+        <a href="savings.html" class="related-card"><div class="r-icon">🐷</div>적금·예금</a>
+        <a href="stock-add.html" class="related-card"><div class="r-icon">📉</div>물타기 계산기</a>
+        <a href="loan.html" class="related-card"><div class="r-icon">🏦</div>대출 이자</a>
+      </div>
+    </div>
+
+  </main>
+
+  <aside class="side-ad"><div class="side-ad-inner"><!-- AdSense 160x600 -->광고 영역<br/>160×600</div></aside>
+</div>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-links">
+      <a href="index.html">홈</a>
+      <a href="privacy.html">개인정보처리방침</a>
+      <a href="terms.html">이용약관</a>
+      <a href="cookie.html">쿠키 정책</a>
+      <a href="contact.html">문의하기</a>
+    </div>
+    <p class="footer-notice">
+      모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
+      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+    </p>
+    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+  </div>
+</footer>
+
+<script>
+const STORAGE_KEY = 'calczip_dday_list';
+const EMOJIS = ['📅','🎂','💍','✈️','🎓','📝','💪','🏃','🎉','❤️','⭐','🏆','🎯','🌸','🎵','💼','🏠','🐣','🌍','🎮'];
+let selectedEmoji = '📅';
+let sortMode = 'nearest';
+let ddayList = [];
+
+/* ===== 초기화 ===== */
+function init() {
+  // 이모지 그리드
+  const grid = document.getElementById('emoji-grid');
+  EMOJIS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn' + (e === selectedEmoji ? ' selected' : '');
+    btn.textContent = e;
+    btn.onclick = () => selectEmoji(e);
+    grid.appendChild(btn);
+  });
+
+  // 오늘 날짜 기본값
+  document.getElementById('dday-date').value = toDateStr(new Date());
+
+  // 저장 데이터 로드
+  try { ddayList = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { ddayList = []; }
+
+  render();
+}
+
+function selectEmoji(e) {
+  selectedEmoji = e;
+  document.querySelectorAll('.emoji-btn').forEach(b => b.classList.toggle('selected', b.textContent === e));
+}
+
+function toggleForm() {
+  const form = document.getElementById('add-form');
+  const btn  = document.getElementById('toggle-btn');
+  const show = form.style.display === 'none';
+  form.style.display = show ? '' : 'none';
+  btn.textContent = show ? '✕ 닫기' : '+ 새 D-day 추가';
+}
+
+function setSort(mode) {
+  sortMode = mode;
+  document.querySelectorAll('.sort-btn').forEach((b,i) => {
+    b.classList.toggle('active',
+      (i===0&&mode==='nearest')||(i===1&&mode==='registered')||(i===2&&mode==='past'));
+  });
+  render();
+}
+
+/* ===== 날짜 유틸 ===== */
+function toDateStr(d) {
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
+function getTargetDate(item) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  let target = new Date(item.date + 'T00:00:00');
+  if (item.repeat) {
+    // 올해 기준으로 설정
+    target.setFullYear(today.getFullYear());
+    // 이미 지났으면 내년으로
+    if (target < today) target.setFullYear(today.getFullYear() + 1);
+  }
+  return target;
+}
+
+function getDiff(item) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const target = getTargetDate(item);
+  const diffMs = target - today;
+  return Math.round(diffMs / (1000 * 60 * 60 * 24));
+}
+
+/* ===== 추가 ===== */
+function addDday() {
+  const name = document.getElementById('dday-name').value.trim();
+  const date = document.getElementById('dday-date').value;
+  const repeat = document.getElementById('repeat-yearly').checked;
+
+  if (!name) { document.getElementById('dday-name').focus(); return; }
+  if (!date) { document.getElementById('dday-date').focus(); return; }
+
+  ddayList.push({ id: Date.now(), name, date, emoji: selectedEmoji, repeat });
+  save();
+  render();
+
+  // 폼 초기화
+  document.getElementById('dday-name').value = '';
+  document.getElementById('dday-date').value = toDateStr(new Date());
+  document.getElementById('repeat-yearly').checked = false;
+  toggleForm();
+}
+
+function deleteDday(id) {
+  if (!confirm('이 D-day를 삭제할까요?')) return;
+  ddayList = ddayList.filter(d => d.id !== id);
+  save();
+  render();
+}
+
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(ddayList)); } catch(e) {}
+}
+
+/* ===== 렌더링 ===== */
+function render() {
+  const list  = document.getElementById('dday-list');
+  const sorts = document.getElementById('sort-btns');
+
+  if (ddayList.length === 0) {
+    sorts.style.display = 'none';
+    list.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📅</div>
+        <div class="empty-text">아직 등록된 D-day가 없어요.<br>위에서 추가해보세요!</div>
+      </div>`;
+    return;
+  }
+
+  sorts.style.display = 'flex';
+  const today = new Date(); today.setHours(0,0,0,0);
+
+  let items = ddayList.map(item => ({ ...item, diff: getDiff(item), target: getTargetDate(item) }));
+
+  if (sortMode === 'nearest') {
+    items = items.filter(x => x.diff >= 0).sort((a,b) => a.diff - b.diff);
+  } else if (sortMode === 'registered') {
+    items = items.filter(x => x.diff >= 0).sort((a,b) => a.id - b.id);
+  } else {
+    items = items.filter(x => x.diff < 0).sort((a,b) => b.diff - a.diff);
+  }
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-text">${sortMode==='past'?'지난 날이 없어요':'다가오는 D-day가 없어요'}</div></div>`;
+    return;
+  }
+
+  list.innerHTML = '';
+  items.forEach(item => {
+    const diff   = item.diff;
+    const isToday  = diff === 0;
+    const isPast   = diff < 0;
+    const isFuture = diff > 0;
+
+    // D-day 텍스트
+    let ddayNum, ddayClass, ddayLabel;
+    if (isToday) {
+      ddayNum = 'D-Day'; ddayClass = 'today';
+      ddayLabel = '🎉 오늘입니다!';
+    } else if (isFuture) {
+      ddayNum = 'D-' + diff; ddayClass = 'future';
+      ddayLabel = Math.abs(diff) + '일 남았습니다';
+    } else {
+      ddayNum = 'D+' + Math.abs(diff); ddayClass = 'past';
+      ddayLabel = Math.abs(diff) + '일 지났습니다';
+    }
+
+    // 세부 단위
+    const absDiff = Math.abs(diff);
+    const weeks  = Math.floor(absDiff / 7);
+    const months = Math.floor(absDiff / 30);
+    const years  = Math.floor(absDiff / 365);
+
+    // 날짜 표시
+    const targetStr = item.target.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'short' });
+    const repeatBadge = item.repeat ? '<span style="font-size:10px;background:var(--highlight-bg);color:var(--primary);padding:1px 6px;border-radius:10px;margin-left:6px">매년</span>' : '';
+
+    // 진행률 (미래일 때만)
+    let progressHTML = '';
+    if (isFuture && item.repeat) {
+      const totalDays = 365;
+      const elapsed   = totalDays - diff;
+      const pct = Math.max(0, Math.min(100, (elapsed / totalDays) * 100));
+      progressHTML = `
+        <div class="dday-progress">
+          <div style="font-size:11px;color:var(--text-muted)">연간 진행률</div>
+          <div class="dday-progress-bar"><div class="dday-progress-fill" style="width:${pct.toFixed(1)}%;background:var(--primary)"></div></div>
+          <div class="dday-progress-label"><span>${pct.toFixed(0)}%</span><span>100%</span></div>
+        </div>`;
+    }
+
+    const card = document.createElement('div');
+    card.className = 'dday-card' + (isPast ? ' past' : '') + (isToday ? ' today-highlight' : '');
+    card.innerHTML = `
+      <div class="dday-header">
+        <div class="dday-emoji">${item.emoji}</div>
+        <div class="dday-title-wrap">
+          <div class="dday-name">${item.name}${repeatBadge}</div>
+          <div class="dday-date-str">${targetStr}</div>
+        </div>
+        <button class="dday-del" onclick="deleteDday(${item.id})" title="삭제">×</button>
+      </div>
+      <div class="dday-number ${ddayClass}">${ddayNum}</div>
+      <div class="dday-label">${ddayLabel}</div>
+      <div class="dday-units">
+        ${years  > 0 ? `<div class="dday-unit"><div class="dday-unit-num">${years.toLocaleString()}</div><div class="dday-unit-label">년</div></div>` : ''}
+        ${months > 0 ? `<div class="dday-unit"><div class="dday-unit-num">${months.toLocaleString()}</div><div class="dday-unit-label">개월</div></div>` : ''}
+        ${weeks  > 0 ? `<div class="dday-unit"><div class="dday-unit-num">${weeks.toLocaleString()}</div><div class="dday-unit-label">주</div></div>` : ''}
+        <div class="dday-unit"><div class="dday-unit-num">${absDiff.toLocaleString()}</div><div class="dday-unit-label">일</div></div>
+      </div>
+      ${progressHTML}
+    `;
+    list.appendChild(card);
+  });
+}
+
+/* ===== 다크모드 ===== */
+function toggleDark() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  document.documentElement.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  localStorage.setItem('calczip-theme', isDark ? 'light' : 'dark');
+  document.getElementById('dark-btn').textContent = isDark ? '🌙' : '☀️';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  const theme = document.documentElement.getAttribute('data-theme');
+  document.getElementById('dark-btn').textContent = theme === 'dark' ? '☀️' : '🌙';
+  init();
+});
+</script>
+
+</body>
+</html>

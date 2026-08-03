@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>주식·코인 물타기 계산기 - CalcZip</title>
@@ -111,7 +112,7 @@
     <div>
       <div class="section-title">관련 계산기</div>
       <div class="related-grid">
-        <a class="related-card"><div class="r-icon">📈</div>수익률 계산기</a>
+        <a href="profit.html" class="related-card"><div class="r-icon">📈</div>수익률 계산기</a>
         <a class="related-card"><div class="r-icon">✂️</div>분할 매수</a>
         <a class="related-card"><div class="r-icon">💰</div>복리 계산기</a>
         <a class="related-card"><div class="r-icon">💼</div>연봉 실수령</a>
@@ -316,10 +317,9 @@ function clearHistory() {
 }
 
 function fmtWon(n) {
-  const abs=Math.abs(n), sign=n<0?'-':'';
-  if(abs>=100000000) return sign+(abs/100000000).toFixed(2)+'억원';
-  if(abs>=10000) return sign+Math.round(abs/10000).toLocaleString()+'만원';
-  return sign+Math.round(abs).toLocaleString()+'원';
+  const sign = n < 0 ? '-' : '';
+  const abs = Math.abs(n);
+  return sign + Math.round(abs).toLocaleString('ko-KR') + '원';
 }
 function fmtPrice(n) {
   if(n>=100000000) return (n/100000000).toFixed(4).replace(/\.?0+$/,'')+'억';
