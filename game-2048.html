@@ -3,74 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>2048 게임 - 무료 온라인 2048 타일 퍼즐</title>
+  <title>2048 게임 - 물타기계산기</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
-function toggleFaq(btn) {
-  btn.classList.toggle('open');
-  const ans = btn.nextElementSibling;
-  ans.classList.toggle('open');
-}
-
-</script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
   <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
   <style>
-    .game-wrap { max-width:460px; margin:0 auto; }
-    .game-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-    .score-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:8px 18px; text-align:center; }
-    .score-label { font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; }
-    .score-val { font-size:22px; font-weight:800; color:var(--text-primary); }
-    .game-btn { padding:8px 16px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--surface-2); color:var(--text-primary); font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); transition:all 0.15s; }
-    .game-btn:hover { border-color:var(--primary); color:var(--primary); }
-    .board { background:#bbada0; border-radius:8px; padding:10px; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; touch-action:none; user-select:none; }
-    .cell { aspect-ratio:1; border-radius:4px; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:24px; transition:all 0.1s; }
-    .cell[data-val="0"]    { background:#cdc1b4; }
-    .cell[data-val="2"]    { background:#eee4da; color:#776e65; }
-    .cell[data-val="4"]    { background:#ede0c8; color:#776e65; }
-    .cell[data-val="8"]    { background:#f2b179; color:#fff; }
-    .cell[data-val="16"]   { background:#f59563; color:#fff; }
-    .cell[data-val="32"]   { background:#f67c5f; color:#fff; }
-    .cell[data-val="64"]   { background:#f65e3b; color:#fff; }
-    .cell[data-val="128"]  { background:#edcf72; color:#fff; font-size:20px; }
-    .cell[data-val="256"]  { background:#edcc61; color:#fff; font-size:20px; }
-    .cell[data-val="512"]  { background:#edc850; color:#fff; font-size:20px; }
-    .cell[data-val="1024"] { background:#edc53f; color:#fff; font-size:16px; }
-    .cell[data-val="2048"] { background:#edc22e; color:#fff; font-size:16px; }
-    .overlay { position:absolute; inset:0; border-radius:8px; background:rgba(238,228,218,.73); display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .board-wrap { position:relative; }
-    .overlay-title { font-size:36px; font-weight:800; color:#776e65; margin-bottom:12px; }
-    .guide { font-size:12px; color:var(--text-muted); text-align:center; margin-top:12px; }
-  
-    .faq-item { border-bottom: 1px solid var(--border); }
-    .faq-item:last-child { border-bottom: none; }
-    .faq-q {
-      width: 100%; padding: 13px 0; background: none; border: none;
-      font-size: 14px; font-weight: 500; color: var(--text-primary);
-      cursor: pointer; text-align: left; display: flex;
-      justify-content: space-between; align-items: center; gap: 12px;
-      font-family: var(--font);
-    }
-    .faq-q:hover { color: var(--primary); }
-    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
-    .faq-q.open .faq-arrow { transform: rotate(180deg); }
-    .faq-a {
-      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
-      padding: 0 0 13px; display: none;
-    }
-    .faq-a.open { display: block; }
-
+    .game-wrap{max-width:500px;margin:0 auto;}
+    .faq-item{border-bottom:1px solid var(--border);}
+    .faq-item:last-child{border-bottom:none;}
+    .faq-q{width:100%;padding:13px 0;background:none;border:none;font-size:14px;font-weight:500;color:var(--text-primary);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:12px;font-family:var(--font);}
+    .faq-q:hover{color:var(--primary);}
+    .faq-arrow{font-size:11px;color:var(--text-muted);transition:transform 0.2s;flex-shrink:0;}
+    .faq-q.open .faq-arrow{transform:rotate(180deg);}
+    .faq-a{font-size:13px;color:var(--text-secondary);line-height:1.8;padding:0 0 13px;display:none;}
+    .faq-a.open{display:block;}
+    .game-btn{padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--surface-2);color:var(--text-primary);font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);transition:all 0.15s;}
+    .game-btn:hover{border-color:var(--primary);color:var(--primary);}
   </style>
-  <meta property="og:title" content="2048 - 타일을 합쳐 2048을 만드세요" />
-  <meta property="og:description" content="방향키로 타일을 합쳐 2048을 만드는 무료 온라인 퍼즐 게임." />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="물타기계산기" />
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="2048 - 타일을 합쳐 2048을 만드세요" />
-  <meta name="twitter:description" content="방향키로 타일을 합쳐 2048을 만드는 무료 온라인 퍼즐 게임." />
 </head>
-<body data-game="2048">
+<body>
 <header class="site-header">
   <div class="header-inner">
     <a href="index.html" class="logo">물타기<span>계산기</span></a>
@@ -81,49 +34,96 @@ function toggleFaq(btn) {
   </div>
 </header>
 <div class="page-layout">
-  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <aside class="side-ad"><div class="side-ad-inner">광고<br/>160×600</div></aside>
   <main class="main-content">
-    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>2048</span></nav>
+    <nav class="breadcrumb"><a href="index.html">홈</a><span>›</span><span>2048 게임</span></nav>
     <div class="game-wrap">
-      <div class="game-header">
-        <div>
-          <div style="font-size:24px;font-weight:800;color:var(--text-primary)">2048</div>
-          <div style="font-size:12px;color:var(--text-muted)">타일을 합쳐 2048을 만드세요!</div>
-        </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div><div style="font-size:22px;font-weight:800;color:var(--text-primary)">2048</div><div style="font-size:12px;color:var(--text-muted)">타일을 합쳐 2048을 만드세요!</div></div>
         <div style="display:flex;gap:8px;align-items:center">
-          <div class="score-box"><div class="score-label">점수</div><div class="score-val" id="score">0</div></div>
-          <div class="score-box"><div class="score-label">최고</div><div class="score-val" id="best">0</div></div>
+          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:6px 14px;text-align:center"><div style="font-size:10px;color:var(--text-muted)">점수</div><div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="score">0</div></div>
+          <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:6px 14px;text-align:center"><div style="font-size:10px;color:var(--text-muted)">최고</div><div style="font-size:18px;font-weight:800;color:var(--text-primary)" id="best">0</div></div>
           <button class="game-btn" onclick="newGame()">새 게임</button>
         </div>
       </div>
-      <div class="board-wrap">
-        <div class="board" id="board"></div>
-        <div class="overlay" id="overlay" style="display:none">
-          <div class="overlay-title" id="overlay-title">Game Over</div>
-          <button class="game-btn" onclick="newGame()">다시 하기</button>
+      <div id="start-screen" style="background:var(--card-bg);border:1px solid var(--border);border-radius:8px;padding:40px;text-align:center;cursor:pointer" onclick="newGame()">
+        <div style="font-size:48px;margin-bottom:12px">🔢</div>
+        <div style="font-size:18px;font-weight:700;color:var(--text-primary);margin-bottom:8px">2048</div>
+        <div style="font-size:14px;color:var(--text-muted);margin-bottom:16px">방향키로 타일을 합쳐 2048을 만드세요</div>
+        <button class="game-btn" style="background:var(--primary);color:#fff;border-color:var(--primary);padding:10px 28px;font-size:14px">게임 시작</button>
+      </div>
+      <div id="board-wrap" style="display:none">
+        <div style="background:#bbada0;border-radius:8px;padding:10px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;touch-action:none;user-select:none" id="board"></div>
+        <div id="overlay" style="display:none;position:relative">
+          <div style="text-align:center;padding:20px;background:var(--card-bg);border:1px solid var(--border);border-radius:var(--radius);margin-top:10px">
+            <div style="font-size:20px;font-weight:800;margin-bottom:8px" id="overlay-title"></div>
+            <button class="game-btn" onclick="newGame()">다시 하기</button>
+          </div>
         </div>
       </div>
-      <p class="guide">⌨️ 방향키 또는 WASD · 📱 스와이프</p>
+      <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:10px">⌨️ 방향키·WASD · 📱 스와이프</p>
+    </div>
+    <div class="ad-banner" style="margin-top:16px">광고 영역</div>
+
+    <!-- 리더보드 -->
+    <div class="calc-card" style="margin-top:0">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+        <h2 style="font-size:17px;font-weight:800;color:var(--text-primary)">🏆 이번 주 랭킹</h2>
+        <span style="font-size:12px;color:var(--text-muted)">매주 월요일 초기화</span>
+      </div>
+      <div id="lb-list" style="border:1px solid var(--border);border-radius:var(--radius-sm);min-height:60px">
+        <div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px">불러오는 중...</div>
+      </div>
+      <button onclick="window._fbRender && window._fbRender('2048')"
+        style="width:100%;padding:7px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;color:var(--text-muted);font-size:12px;cursor:pointer;margin-top:8px;font-family:var(--font)">🔄 새로고침</button>
     </div>
 
-    <div class="calc-card" style="margin-top:0">
+    <!-- 점수 등록 모달 -->
+    <div id="score-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center">
+      <div style="background:var(--card-bg);border-radius:var(--radius);padding:24px;max-width:300px;width:90%;text-align:center">
+        <div style="font-size:36px;margin-bottom:8px">🎉</div>
+        <div style="font-size:18px;font-weight:800;margin-bottom:4px;color:var(--text-primary)">게임 종료!</div>
+        <div style="font-size:20px;color:var(--primary);font-weight:800;margin-bottom:16px" id="modal-score"></div>
+        <div style="font-size:13px;color:var(--text-muted);margin-bottom:10px">닉네임 입력 후 랭킹 등록</div>
+        <input id="nickname-input" type="text" maxlength="10" placeholder="닉네임 (최대 10자)"
+          style="width:100%;padding:10px;border:1px solid var(--border);border-radius:var(--radius-sm);font-size:14px;background:var(--input-bg);color:var(--text-primary);font-family:var(--font);outline:none;margin-bottom:10px;box-sizing:border-box" />
+        <div style="display:flex;gap:8px">
+          <button onclick="submitScore()" style="flex:1;padding:10px;background:var(--primary);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--font)">등록</button>
+          <button onclick="closeModal()" style="padding:10px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:none;color:var(--text-muted);font-size:14px;cursor:pointer;font-family:var(--font)">건너뛰기</button>
+        </div>
+        <div id="modal-msg" style="font-size:12px;margin-top:8px;min-height:16px"></div>
+      </div>
+    </div>
+
+    <!-- 게임 방법 -->
+    <div class="calc-card">
       <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">🔢 2048 게임 방법</h2>
       <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
-        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:0 0 8px">게임 목표</h3>
-        <p style="margin-bottom:12px"><strong style="color:var(--primary)">4×4 격자에서 같은 숫자 타일을 합쳐 2048 타일을 만드는 게임입니다.</strong></p>
-        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">조작 방법</h3>
+        <p style="margin-bottom:12px"><strong style="color:var(--primary)">같은 숫자 타일을 합쳐 2048을 만드는 게임입니다.</strong></p>
         <ul style="padding-left:18px;margin-bottom:12px">
           <li style="margin-bottom:6px">PC: 방향키(↑↓←→) 또는 WASD</li>
           <li style="margin-bottom:6px">모바일: 화면 스와이프</li>
           <li style="margin-bottom:6px">같은 숫자가 만나면 합쳐져 두 배가 됨</li>
         </ul>
-        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px">
-          💡 큰 숫자를 구석에 모으고, 빈 칸을 최대한 확보하세요.
-        </div>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px;font-size:13px">💡 큰 숫자를 구석에 모으고 빈 칸을 많이 확보하세요!</div>
       </div>
     </div>
 
-    <div style="margin-top:20px">
+    <!-- FAQ -->
+    <div class="calc-card">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>최고 점수가 저장되나요?</span><span class="faq-arrow">▼</span></button>
+        <div class="faq-a">네, 브라우저에 자동 저장됩니다. 같은 기기에서 다음 방문 시에도 유지됩니다.</div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)"><span>2048 이후에도 계속할 수 있나요?</span><span class="faq-arrow">▼</span></button>
+        <div class="faq-a">네, 2048 달성 후에도 게임이 계속됩니다. 4096, 8192에 도전해보세요!</div>
+      </div>
+    </div>
+
+    <div class="ad-banner ad-banner-tall">광고 영역</div>
+    <div>
       <div class="section-title">다른 게임</div>
       <div class="related-grid">
         <a href="game-apple.html" class="related-card"><div class="r-icon">🍎</div>사과 게임</a>
@@ -133,7 +133,7 @@ function toggleFaq(btn) {
       </div>
     </div>
   </main>
-  <aside class="side-ad"><div class="side-ad-inner">광고 영역<br/>160×600</div></aside>
+  <aside class="side-ad"><div class="side-ad-inner">광고<br/>160×600</div></aside>
 </div>
 <footer class="site-footer">
   <div class="footer-inner">
@@ -141,199 +141,140 @@ function toggleFaq(btn) {
     <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
+
 <script>
-let board, score, best = parseInt(localStorage.getItem('2048-best')||'0'), won = false;
-document.getElementById('best').textContent = best;
-
-function newGame() {
-  board = Array(4).fill(null).map(()=>Array(4).fill(0));
-  score = 0; won = false;
-  addTile(); addTile();
-  render();
-  document.getElementById('overlay').style.display = 'none';
+let _pendingScore=0;
+function showScoreModal(score){
+  _pendingScore=score;
+  document.getElementById('modal-score').textContent=score.toLocaleString()+'점';
+  document.getElementById('modal-msg').textContent='';
+  document.getElementById('nickname-input').value=localStorage.getItem('lb-nickname')||'';
+  document.getElementById('score-modal').style.display='flex';
+  setTimeout(()=>document.getElementById('nickname-input').focus(),100);
 }
-
-function addTile() {
-  const empties = [];
-  board.forEach((row,r)=>row.forEach((v,c)=>{ if(!v) empties.push([r,c]); }));
-  if (!empties.length) return;
-  const [r,c] = empties[Math.floor(Math.random()*empties.length)];
-  board[r][c] = Math.random()<0.9 ? 2 : 4;
+function closeModal(){
+  document.getElementById('score-modal').style.display='none';
+  window._fbRender&&window._fbRender('2048');
 }
-
-function render() {
-  const el = document.getElementById('board');
-  el.innerHTML = board.flat().map(v=>`<div class="cell" data-val="${v}">${v||''}</div>`).join('');
-  document.getElementById('score').textContent = score;
-  if (score > best) { best = score; localStorage.setItem('2048-best', best); document.getElementById('best').textContent = best; }
-}
-
-function move(dir) {
-  let moved = false;
-  const rotate = m => m[0].map((_,i)=>m.map(r=>r[i]).reverse());
-  const slide  = row => {
-    let r = row.filter(v=>v);
-    for (let i=0;i<r.length-1;i++) { if(r[i]===r[i+1]) { r[i]*=2; score+=r[i]; if(r[i]===2048&&!won){won=true;} r.splice(i+1,1); } }
-    while(r.length<4) r.push(0);
-    return r;
-  };
-  let b = board.map(r=>[...r]);
-  if (dir==='up')    { b=rotate(rotate(rotate(b))); b=b.map(slide); b=rotate(b); }
-  else if(dir==='down')  { b=rotate(b); b=b.map(slide); b=rotate(rotate(rotate(b))); }
-  else if(dir==='left')  { b=b.map(slide); }
-  else if(dir==='right') { b=b.map(r=>slide(r.reverse()).reverse()); }
-  if(JSON.stringify(b)!==JSON.stringify(board)) { board=b; addTile(); moved=true; }
-  render();
-  if(moved && isGameOver()) showOverlay('Game Over 😢');
-}
-
-function isGameOver() {
-  for(let r=0;r<4;r++) for(let c=0;c<4;c++) {
-    if(!board[r][c]) return false;
-    if(c<3&&board[r][c]===board[r][c+1]) return false;
-    if(r<3&&board[r][c]===board[r+1][c]) return false;
+async function submitScore(){
+  const nick=document.getElementById('nickname-input').value.trim();
+  if(!nick){document.getElementById('modal-msg').textContent='닉네임을 입력해주세요';return;}
+  localStorage.setItem('lb-nickname',nick);
+  document.getElementById('modal-msg').textContent='등록 중...';
+  if(window._fbSaveScore){
+    const ok=await window._fbSaveScore('2048',nick,_pendingScore);
+    if(ok){document.getElementById('modal-msg').textContent='✅ 등록 완료!';setTimeout(closeModal,800);}
+    else document.getElementById('modal-msg').textContent='❌ 실패. 다시 시도하세요.';
   }
-  return true;
 }
-function showOverlay(msg) {
-  document.getElementById('overlay-title').textContent = msg;
-  document.getElementById('overlay').style.display = 'flex';
-  if(score > 0) setTimeout(() => showScoreModal(score), 600);
+function toggleFaq(btn){btn.classList.toggle('open');btn.nextElementSibling.classList.toggle('open');}
+function toggleDark(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  document.documentElement.setAttribute('data-theme',isDark?'light':'dark');
+  localStorage.setItem('calczip-theme',isDark?'light':'dark');
+  document.getElementById('dark-btn').textContent=isDark?'🌙':'☀️';
 }
-
-// 키보드
-document.addEventListener('keydown', e => {
-  const map = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
-  if(map[e.key]) { e.preventDefault(); move(map[e.key]); }
-});
-
-// 터치
-let tx, ty;
-document.getElementById('board').addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ty=e.touches[0].clientY; }, {passive:true});
-document.getElementById('board').addEventListener('touchend', e=>{
-  const dx=e.changedTouches[0].clientX-tx, dy=e.changedTouches[0].clientY-ty;
-  if(Math.abs(dx)>Math.abs(dy)) move(dx>0?'right':'left');
-  else move(dy>0?'down':'up');
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('dark-btn').textContent=document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
 });
 
 
-let _pendingScore = 0;
-
-function showScoreModal(score) {
-  _pendingScore = score;
-  document.getElementById('modal-score').textContent = score.toLocaleString() + '점';
-  document.getElementById('modal-msg').textContent = '';
-  document.getElementById('nickname-input').value = localStorage.getItem('lb-nickname') || '';
-  document.getElementById('score-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('nickname-input').focus(), 100);
+const CELL_COLORS={'0':'#cdc1b4','2':'#eee4da','4':'#ede0c8','8':'#f2b179','16':'#f59563','32':'#f67c5f','64':'#f65e3b','128':'#edcf72','256':'#edcc61','512':'#edc850','1024':'#edc53f','2048':'#edc22e'};
+const TEXT_COLORS={'0':'transparent','2':'#776e65','4':'#776e65','8':'#fff','16':'#fff','32':'#fff','64':'#fff','128':'#fff','256':'#fff','512':'#fff','1024':'#fff','2048':'#fff'};
+let board,score,won=false;
+const bestKey='2048-best';
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('best').textContent=localStorage.getItem(bestKey)||0;
+});
+function newGame(){
+  document.getElementById('start-screen').style.display='none';
+  document.getElementById('board-wrap').style.display='';
+  document.getElementById('overlay').style.display='none';
+  board=Array(4).fill(null).map(()=>Array(4).fill(0));
+  score=0;won=false;
+  addTile();addTile();render();
 }
-
-function closeModal() {
-  document.getElementById('score-modal').style.display = 'none';
-  const game = document.body.dataset.game;
-  if(game) window.renderLeaderboard(game);
+function addTile(){
+  const e=[];board.forEach((r,ri)=>r.forEach((v,ci)=>{if(!v)e.push([ri,ci]);}));
+  if(!e.length)return;
+  const [r,c]=e[Math.floor(Math.random()*e.length)];
+  board[r][c]=Math.random()<0.9?2:4;
 }
-
-async function submitScore() {
-  const nick = document.getElementById('nickname-input').value.trim();
-  if(!nick) { document.getElementById('modal-msg').textContent = '닉네임을 입력해주세요'; return; }
-  localStorage.setItem('lb-nickname', nick);
-  document.getElementById('modal-msg').textContent = '등록 중...';
-  const game = document.body.dataset.game;
-  const ok = await window.saveScore(game, nick, _pendingScore);
-  if(ok) {
-    document.getElementById('modal-msg').textContent = '✅ 등록 완료!';
-    setTimeout(() => { closeModal(); }, 1000);
-  } else {
-    document.getElementById('modal-msg').textContent = '❌ 등록 실패. 다시 시도해주세요.';
-  }
+function render(){
+  const el=document.getElementById('board');
+  el.innerHTML=board.flat().map(v=>`<div style="aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:${v>512?16:v>64?20:24}px;background:${CELL_COLORS[v]||'#edc22e'};color:${TEXT_COLORS[v]||'#fff'}">${v||''}</div>`).join('');
+  document.getElementById('score').textContent=score;
+  const best=parseInt(localStorage.getItem(bestKey)||0);
+  if(score>best){localStorage.setItem(bestKey,score);document.getElementById('best').textContent=score;}
 }
-
-function toggleDark() {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  document.documentElement.setAttribute('data-theme', isDark?'light':'dark');
-  localStorage.setItem('calczip-theme', isDark?'light':'dark');
-  document.getElementById('dark-btn').textContent = isDark?'🌙':'☀️';
+function move(dir){
+  const rotate=m=>m[0].map((_,i)=>m.map(r=>r[i]).reverse());
+  const slide=row=>{let r=row.filter(v=>v);for(let i=0;i<r.length-1;i++){if(r[i]===r[i+1]){r[i]*=2;score+=r[i];if(r[i]===2048&&!won)won=true;r.splice(i+1,1);}}while(r.length<4)r.push(0);return r;};
+  let b=board.map(r=>[...r]);
+  if(dir==='up'){b=rotate(rotate(rotate(b)));b=b.map(slide);b=rotate(b);}
+  else if(dir==='down'){b=rotate(b);b=b.map(slide);b=rotate(rotate(rotate(b)));}
+  else if(dir==='left'){b=b.map(slide);}
+  else{b=b.map(r=>slide(r.reverse()).reverse());}
+  if(JSON.stringify(b)!==JSON.stringify(board)){board=b;addTile();}
+  render();
+  if(isGameOver())gameOver();
 }
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.getElementById('dark-btn').textContent = document.documentElement.getAttribute('data-theme')==='dark'?'☀️':'🌙';
-  newGame();
+function isGameOver(){
+  for(let r=0;r<4;r++)for(let c=0;c<4;c++){
+    if(!board[r][c])return false;
+    if(c<3&&board[r][c]===board[r][c+1])return false;
+    if(r<3&&board[r][c]===board[r+1][c])return false;
+  }return true;
+}
+function gameOver(){
+  document.getElementById('overlay-title').textContent='Game Over 😢';
+  document.getElementById('overlay').style.display='';
+  if(score>0)setTimeout(()=>showScoreModal(score),600);
+}
+document.addEventListener('keydown',e=>{
+  if(!board)return;
+  const map={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',s:'down',a:'left',d:'right'};
+  if(map[e.key]){e.preventDefault();move(map[e.key]);}
+});
+let tx,ty;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+document.addEventListener('touchend',e=>{
+  if(!board)return;
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>Math.abs(dy))move(dx>0?'right':'left');else move(dy>0?'down':'up');
 });
 </script>
 
-  <!-- Firebase -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, where, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDdiNApueUlXQIRYDRBAuTnjWFf4ZNTsnU",
-      authDomain: "goni-6492d.firebaseapp.com",
-      projectId: "goni-6492d",
-      storageBucket: "goni-6492d.firebasestorage.app",
-      messagingSenderId: "251038196229",
-      appId: "1:251038196229:web:6eca90c7ae1ca0c906726c"
-    };
-    const app = initializeApp(firebaseConfig);
-    const db  = getFirestore(app);
-
-    function getWeekStart() {
-      const now = new Date();
-      const day = now.getDay();
-      const diff = day === 0 ? 6 : day - 1;
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - diff);
-      monday.setHours(0,0,0,0);
-      return Timestamp.fromDate(monday);
-    }
-
-    window.saveScore = async function(game, nickname, score) {
-      try {
-        await addDoc(collection(db, 'leaderboard', game, 'scores'), {
-          nickname: nickname.slice(0,10), score, createdAt: Timestamp.now()
-        });
-        return true;
-      } catch(e) { console.error(e); return false; }
-    };
-
-    window.getTopScores = async function(game) {
-      try {
-        const q = query(
-          collection(db, 'leaderboard', game, 'scores'),
-          where('createdAt', '>=', getWeekStart()),
-          limit(100)
-        );
-        const snap = await getDocs(q);
-        const docs = snap.docs.map(d => d.data());
-        docs.sort((a,b) => b.score - a.score);
-        return docs.slice(0,10);
-      } catch(e) { console.error(e); return []; }
-    };
-
-    window.renderLeaderboard = async function(game) {
-      const el = document.getElementById('lb-list');
-      if(!el) return;
-      el.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:12px">불러오는 중...</div>';
-      const scores = await window.getTopScores(game);
-      if(scores.length === 0) {
-        el.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:12px">아직 등록된 점수가 없어요. 첫 번째 도전자가 되세요!</div>';
-        return;
-      }
-      const medals = ['🥇','🥈','🥉'];
-      el.innerHTML = scores.map((s,i) => `
-        <div style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--border);font-size:13px">
-          <span style="font-size:16px;width:24px;text-align:center">${medals[i]||i+1}</span>
-          <span style="flex:1;font-weight:${i<3?'700':'400'};color:var(--text-primary)">${s.nickname}</span>
-          <span style="font-weight:700;color:var(--primary)">${s.score.toLocaleString()}점</span>
-        </div>
-      `).join('');
-    };
-
-    // 페이지 로드 시 자동 렌더
-    document.addEventListener('DOMContentLoaded', () => {
-      const game = document.body.dataset.game;
-      if(game) window.renderLeaderboard(game);
-    });
-  </script>
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, query, where, limit, Timestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  const app = initializeApp({apiKey:"AIzaSyDdiNApueUlXQIRYDRBAuTnjWFf4ZNTsnU",authDomain:"goni-6492d.firebaseapp.com",projectId:"goni-6492d",storageBucket:"goni-6492d.firebasestorage.app",messagingSenderId:"251038196229",appId:"1:251038196229:web:6eca90c7ae1ca0c906726c"});
+  const db = getFirestore(app);
+  function getWeekStart(){const n=new Date();const d=n.getDay();const m=new Date(n);m.setDate(n.getDate()-(d===0?6:d-1));m.setHours(0,0,0,0);return Timestamp.fromDate(m);}
+  window._fbSaveScore=async function(game,nick,score){
+    try{await addDoc(collection(db,'leaderboard',game,'scores'),{nickname:nick.slice(0,10),score,createdAt:Timestamp.now()});return true;}catch(e){console.error(e);return false;}
+  };
+  window._fbGetScores=async function(game){
+    try{
+      const q=query(collection(db,'leaderboard',game,'scores'),where('createdAt','>=',getWeekStart()),limit(100));
+      const s=await getDocs(q);const docs=s.docs.map(d=>d.data());
+      docs.sort((a,b)=>b.score-a.score);return docs.slice(0,10);
+    }catch(e){console.error(e);return[];}
+  };
+  window._fbRender=async function(game){
+    const el=document.getElementById('lb-list');if(!el)return;
+    el.innerHTML='<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px">불러오는 중...</div>';
+    const scores=await window._fbGetScores(game);
+    if(!scores.length){el.innerHTML='<div style="text-align:center;color:var(--text-muted);font-size:13px;padding:16px">아직 등록된 점수가 없어요!<br>첫 번째 도전자가 되세요 🏆</div>';return;}
+    const medals=['🥇','🥈','🥉'];
+    el.innerHTML=scores.map((s,i)=>`
+      <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px">
+        <span style="font-size:18px;width:28px;text-align:center">${medals[i]||i+1}</span>
+        <span style="flex:1;font-weight:${i<3?700:400};color:var(--text-primary)">${s.nickname}</span>
+        <span style="font-weight:700;color:var(--primary)">${s.score.toLocaleString()}점</span>
+      </div>`).join('');
+  };
+  window._fbRender('2048');
+</script>
 </body>
 </html>
