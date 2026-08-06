@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>대출 이자 계산기 - CalcZip</title>
-  <meta name="description" content="대출 원금, 금리, 기간을 입력하면 월 상환금, 총 이자, 상환 스케줄을 자동 계산해드립니다. 원리금균등·원금균등·만기일시 방식 지원." />
+  <title>대출 이자 계산기 - 월 상환금·총이자 무료 계산 (원리금균등·원금균등)</title>
+  <meta name="keywords" content="대출이자계산기, 월상환금계산, 원리금균등계산기, 대출계산기, 주택대출이자" />
+  <meta name="description" content="대출 원금, 금리, 기간 입력 시 월 납입금과 총 이자를 자동 계산. 원리금균등·원금균등·만기일시 방식 지원. 거치기간, 상환 스케줄 확인." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
@@ -25,13 +33,39 @@
     .donut-labels { display:flex; flex-direction:column; gap:8px; }
     .donut-label-item { display:flex; align-items:center; gap:8px; font-size:13px; }
     .donut-dot { width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="대출 이자 계산기 - 월 상환금 자동 계산" />
+  <meta property="og:description" content="대출 금리와 기간만 입력하면 월 납입금, 총이자, 상환 스케줄 즉시 확인." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="대출 이자 계산기 - 월 상환금 자동 계산" />
+  <meta name="twitter:description" content="대출 금리와 기간만 입력하면 월 납입금, 총이자, 상환 스케줄 즉시 확인." />
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="index.html">홈</a>
@@ -175,6 +209,44 @@
       </div>
     </div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">대출 이자 계산 방법</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <p style="margin-bottom:12px">대출 상환 방식은 크게 세 가지로 나뉩니다. 각 방식에 따라 월 납입금과 총 이자가 달라지므로 <strong style="color:var(--primary)">본인 상황에 맞는 방식 선택</strong>이 중요합니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">① 원리금균등상환</h3>
+        <p style="margin-bottom:8px">매달 동일한 금액을 납부합니다. 가장 일반적인 방식으로 <strong>주택담보대출</strong>에 주로 사용됩니다. 초기에 이자 비중이 높고 후반부에 원금 비중이 높아집니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">② 원금균등상환</h3>
+        <p style="margin-bottom:8px">매달 같은 원금을 갚고, 이자는 잔액에 따라 줄어듭니다. 초기 납입금이 높지만 <strong>총 이자 부담이 원리금균등보다 적습니다.</strong></p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">③ 만기일시상환</h3>
+        <p style="margin-bottom:12px">기간 동안 이자만 납부하고 만기에 원금을 한 번에 갚습니다. 월 부담은 낮지만 <strong>총 이자 부담이 가장 큽니다.</strong> 주로 전세자금대출에 사용됩니다.</p>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px">
+          💡 같은 금액이라면 총 이자: 원금균등 &lt; 원리금균등 &lt; 만기일시 순으로 적습니다.
+        </div>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>거치기간이란 무엇인가요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">거치기간은 원금 상환 없이 이자만 납부하는 기간입니다. 예를 들어 3년 거치 27년 상환이면 처음 3년은 이자만, 이후 27년간 원리금을 상환합니다. 초기 부담을 줄일 수 있지만 총 이자는 더 많아집니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>변동금리 대출은 어떻게 계산하나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">이 계산기는 고정금리 기준으로 계산합니다. 변동금리 대출은 금리 변동에 따라 납입금이 달라지므로, 현재 적용 금리로 계산하시고 금리 변동 시마다 재계산하시는 것을 권장합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>중도상환하면 이자를 줄일 수 있나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">네, 원금을 조기에 상환하면 남은 기간의 이자가 줄어듭니다. 단, 대부분의 대출 상품은 일정 기간 내 중도상환 시 수수료(보통 0.5~2%)가 발생하므로 확인이 필요합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>DSR이란 무엇인가요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">DSR(총부채원리금상환비율)은 연간 모든 대출의 원리금 상환액이 연소득에서 차지하는 비율입니다. 현재 규제로 DSR 40%(1금융권 기준)를 초과하면 대출이 제한됩니다. 월 소득의 약 3.3배가 연소득이며, 연소득 × 40% ÷ 12가 월 최대 상환 가능금액입니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
     <div>
@@ -204,9 +276,9 @@
     <p class="footer-notice">
       모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
       중요한 결정 전 반드시 전문가와 확인하세요.<br>
-      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+      물타기계산기은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
     </p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

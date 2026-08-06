@@ -1,21 +1,36 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>주식·코인 물타기 계산기 - CalcZip</title>
-  <meta name="description" content="주식, 코인 추가 매수 시 평균단가를 자동 계산. 매수 내역 여러 개 입력, 손익분기점(BEP), 평가손익 즉시 확인. 최근 계산 기록 저장." />
+  <title>주식 물타기 계산기 - 코인 평균단가 자동 계산 (BEP·손익분기)</title>
+  <meta name="keywords" content="주식물타기계산기, 코인물타기, 평균단가계산기, 물타기계산, BEP계산기, 손익분기점" />
+  <meta name="description" content="주식·코인 물타기 시 평균단가를 자동 계산. 매수 내역 여러 개 입력, 손익분기점(BEP), 평가손익 즉시 확인. 추가 매수 후 새 평균단가 계산." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
   <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
+  <meta property="og:title" content="주식·코인 물타기 계산기 - 평균단가 자동 계산" />
+  <meta property="og:description" content="추가 매수 후 평균단가·손익분기점을 바로 확인. 매수 내역 여러 개 입력 가능." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="주식·코인 물타기 계산기 - 평균단가 자동 계산" />
+  <meta name="twitter:description" content="추가 매수 후 평균단가·손익분기점을 바로 확인. 매수 내역 여러 개 입력 가능." />
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="index.html">홈</a>
@@ -107,6 +122,68 @@
       </div>
     </div>
 
+
+    <!-- ===== 콘텐츠 섹션 ===== -->
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">주식·코인 물타기란?</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <p style="margin-bottom:12px"><strong style="color:var(--text-primary)">물타기</strong>란 보유 중인 주식이나 코인의 가격이 하락했을 때 추가로 매수하여 <strong style="color:var(--primary)">평균 매수단가를 낮추는 투자 전략</strong>입니다. 예를 들어 1만원에 100주를 샀다가 8,000원으로 떨어졌을 때 100주를 더 사면 평균단가는 9,000원이 됩니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">물타기 계산 방법</h3>
+        <p style="margin-bottom:8px">평균단가 = 총 매수금액 ÷ 총 수량</p>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px">
+          예시: 5만원 × 100주 + 4만원 × 100주 = 900만원 ÷ 200주 = <strong>평균 4만 5천원</strong>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">물타기 장점</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px">평균단가를 낮춰 손익분기점(BEP)을 낮출 수 있음</li>
+          <li style="margin-bottom:6px">주가 반등 시 수익 회복이 빠름</li>
+          <li style="margin-bottom:6px">장기적으로 우량주라면 효과적인 전략</li>
+        </ul>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">물타기 주의사항</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px">하락 추세가 지속될 경우 손실이 더 커질 수 있음</li>
+          <li style="margin-bottom:6px">추가 매수 전 해당 종목의 펀더멘털을 반드시 확인</li>
+          <li style="margin-bottom:6px">투자 가능 금액의 일부만 추가 매수하는 것을 권장</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>물타기와 분할매수의 차이는 무엇인가요?</span><span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">물타기는 이미 매수한 종목이 하락했을 때 추가 매수하는 것이고, 분할매수는 처음부터 여러 번 나눠서 매수하는 전략입니다. 물타기는 손실 만회 목적, 분할매수는 리스크 분산 목적이 강합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>코인 물타기도 같은 방식으로 계산하나요?</span><span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">네, 계산 방식은 동일합니다. 총 매수금액 ÷ 총 수량 = 평균단가입니다. 코인은 소수점 단위 거래가 가능하므로 이 계산기는 소수점 수량도 지원합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>손익분기점(BEP)이란 무엇인가요?</span><span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">BEP(Break-Even Point)는 손익이 0이 되는 가격, 즉 원금 회복을 위한 최소 주가입니다. 수수료가 없다면 평균단가와 동일합니다. 현재가가 BEP 이상이면 수익, 이하면 손실입니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>물타기는 몇 번까지 하는 게 좋을까요?</span><span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">정해진 규칙은 없지만, 일반적으로 2~4회 분할매수를 권장합니다. 너무 많은 물타기는 특정 종목에 자금이 과도하게 집중될 수 있습니다. 전체 투자금의 30% 이상을 한 종목 물타기에 사용하는 것은 위험합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            <span>최근 기록은 어디에 저장되나요?</span><span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">최근 계산 기록은 브라우저의 로컬 스토리지에 저장됩니다. 서버로 전송되지 않으며, 같은 기기·브라우저에서 다음에 방문해도 기록이 유지됩니다. 브라우저 데이터를 삭제하면 기록도 사라집니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
     <div>
@@ -135,9 +212,9 @@
     <p class="footer-notice">
       모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
       중요한 결정 전 반드시 전문가와 확인하세요.<br>
-      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+      물타기계산기은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
     </p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

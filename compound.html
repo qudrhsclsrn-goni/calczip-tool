@@ -3,24 +3,58 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>복리 계산기 - CalcZip</title>
-  <meta name="description" content="원금, 연 수익률, 기간을 입력하면 복리 수익을 자동 계산. 월 적립식 복리도 지원. 연도별 자산 증가 확인." />
+  <title>복리 계산기 - 원금·수익률·기간으로 복리 수익 계산 (월 적립)</title>
+  <meta name="keywords" content="복리계산기, 복리수익계산, 투자수익계산기, 72법칙계산기, 월적립복리계산" />
+  <meta name="description" content="원금과 연 수익률, 기간을 입력하면 복리 수익을 자동 계산. 월 적립식 복리 지원. 연도별 자산 증가 확인. 72법칙으로 자산 2배 기간 계산." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
   <style>
     .result-big { font-size:30px; font-weight:800; letter-spacing:-1px; color:var(--primary); }
     .year-table-wrap { max-height:300px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); }
     .year-table-wrap::-webkit-scrollbar { width:4px; }
     .year-table-wrap::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:2px; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="복리 계산기 - 투자 수익 자동 계산" />
+  <meta property="og:description" content="원금·수익률·기간 입력하면 복리 효과와 연도별 자산 증가를 바로 확인." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="복리 계산기 - 투자 수익 자동 계산" />
+  <meta name="twitter:description" content="원금·수익률·기간 입력하면 복리 효과와 연도별 자산 증가를 바로 확인." />
 </head>
 <body>
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav"><a href="index.html">홈</a></nav>
       <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
@@ -128,6 +162,47 @@
       </div>
     </div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">복리란 무엇인가?</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <p style="margin-bottom:12px"><strong style="color:var(--primary)">복리(複利)</strong>는 원금뿐만 아니라 이자에도 이자가 붙는 방식입니다. 반면 단리는 원금에만 이자가 붙습니다. 시간이 길수록 복리의 효과는 기하급수적으로 커집니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">복리 계산 공식</h3>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px">
+          최종금액 = 원금 × (1 + 연이율/12)^(투자기간 × 12)<br>
+          예: 1000만원, 연 7%, 10년 → 약 2,009만원
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">72법칙이란?</h3>
+        <p style="margin-bottom:8px">72를 수익률로 나누면 원금이 2배가 되는 대략적인 기간을 알 수 있습니다.</p>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px">
+          연 7% → 72 ÷ 7 ≈ 10.3년에 2배<br>
+          연 10% → 72 ÷ 10 ≈ 7.2년에 2배
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">복리 투자 예시 (연 7%, 30년)</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px">원금 1,000만원 → <strong>약 7,612만원</strong></li>
+          <li style="margin-bottom:6px">원금 1,000만원 + 월 50만원 적립 → <strong>약 6억 8천만원</strong></li>
+        </ul>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>복리 효과를 실제로 누릴 수 있는 투자 상품은?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">ETF·주식 장기투자, 연금저축펀드, IRP, 복리식 적금 등이 있습니다. 특히 배당 재투자(DRIP)를 활용하면 실질적인 복리 효과를 누릴 수 있습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>연 7% 수익률은 현실적인가요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">미국 S&P500 지수의 역사적 평균 연 수익률은 약 10%(인플레이션 반영 시 7%)입니다. 과거 데이터 기준이며 미래를 보장하지는 않습니다. 장기 분산투자 시 참고 수치로 활용됩니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>월 적립액을 입력하면 어떻게 계산되나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">초기 원금에 복리를 적용하면서 매월 추가 금액도 함께 복리로 계산합니다. 즉, 매월 납입한 금액에도 남은 기간 동안 복리 이자가 붙습니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall">광고 영역 (300×250)</div>
     <div>
       <div class="section-title">관련 계산기</div>
@@ -149,7 +224,7 @@
       <a href="terms.html">이용약관</a><a href="cookie.html">쿠키 정책</a><a href="contact.html">문의하기</a>
     </div>
     <p class="footer-notice">모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.</p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

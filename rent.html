@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>전월세 전환 계산기 - CalcZip</title>
-  <meta name="description" content="전세를 월세로, 월세를 전세로 전환할 때 적정 금액을 계산하세요. 전월세 전환율 기준 자동 계산." />
+  <title>전월세 전환 계산기 - 전세를 월세로 월세를 전세로 변환 계산</title>
+  <meta name="keywords" content="전월세전환계산기, 전세월세전환, 전월세비교, 전환율계산기, 보증금월세계산" />
+  <meta name="description" content="전세를 월세로, 월세를 전세로 전환할 때 적정 금액 계산. 전월세 전환율(법정 상한 6%) 기준. 전세 vs 월세 비교로 더 유리한 선택 확인." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <script>(function(){const t=localStorage.getItem('calczip-theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.setAttribute('data-theme',t);})();</script>
   <style>
     .mode-tabs { display:flex; gap:6px; margin-bottom:18px; background:var(--surface-2); padding:4px; border-radius:var(--radius-sm); }
@@ -16,12 +24,38 @@
     .mode-tab.active { background:var(--card-bg); color:var(--primary); box-shadow:var(--shadow); }
     .result-big { font-size:30px; font-weight:800; letter-spacing:-1px; color:var(--primary); }
     .info-box { background:var(--surface-2); border-radius:var(--radius-sm); padding:12px 14px; font-size:12px; color:var(--text-muted); line-height:1.7; margin-top:10px; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="전월세 전환 계산기 - 전세·월세 비교 계산" />
+  <meta property="og:description" content="전세를 월세로 전환할 때 적정 월세를 계산하고 전세와 월세 중 유리한 쪽을 비교하세요." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="전월세 전환 계산기 - 전세·월세 비교 계산" />
+  <meta name="twitter:description" content="전세를 월세로 전환할 때 적정 월세를 계산하고 전세와 월세 중 유리한 쪽을 비교하세요." />
 </head>
 <body>
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav"><a href="index.html">홈</a></nav>
       <button class="dark-toggle" onclick="toggleDark()" id="dark-btn">🌙</button>
@@ -120,6 +154,44 @@
       </div>
     </div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">전월세 전환 계산 방법</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:0 0 8px">전월세 전환율이란?</h3>
+        <p style="margin-bottom:12px">전세보증금을 월세로 전환할 때 적용하는 이율입니다. 현행 주택임대차보호법상 <strong style="color:var(--primary)">법정 상한은 연 6%</strong>입니다. 집주인과 협의하여 이 이하로 적용할 수 있습니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">전세 → 월세 계산 공식</h3>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px">
+          월세 = (전세금 - 월세보증금) × 전환율 ÷ 12<br>
+          예: 전세 3억, 보증금 5천만, 전환율 6%<br>
+          → (3억 - 5천만) × 6% ÷ 12 = <strong>월 125만원</strong>
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">전세 vs 월세 선택 기준</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px">전세자금 대출금리 &gt; 전월세전환율: <strong>월세가 유리</strong></li>
+          <li style="margin-bottom:6px">전세자금 대출금리 &lt; 전월세전환율: <strong>전세가 유리</strong></li>
+          <li style="margin-bottom:6px">목돈이 없거나 유동성이 필요한 경우: 월세 고려</li>
+        </ul>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>집주인이 전환율 6% 이상을 요구하면?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">주택임대차보호법에 따라 전월세 전환율 상한은 연 6%입니다. 집주인이 이를 초과하는 전환을 요구한다면 거부할 수 있습니다. 단, 신규 계약(갱신이 아닌)의 경우 법적 상한이 적용되지 않을 수 있습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>전세대출이 있는 경우 비교 방법은?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">전세대출이 있다면 실제 대출금리를 기회비용으로 입력하세요. 예를 들어 전세대출 금리가 4%라면, 전세 월 비용은 전세금 × 4% ÷ 12가 됩니다. 이 금액보다 월세 비용이 낮으면 월세가 유리합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>월세 소득공제를 받을 수 있나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">무주택 세대주로 총급여 7,000만원 이하인 경우 월세 세액공제를 받을 수 있습니다. 공제율은 총급여 5,500만원 이하 17%, 초과 15%입니다. 연간 월세 한도 1,000만원까지 적용됩니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall">광고 영역 (300×250)</div>
     <div>
       <div class="section-title">관련 계산기</div>
@@ -141,7 +213,7 @@
       <a href="terms.html">이용약관</a><a href="cookie.html">쿠키 정책</a><a href="contact.html">문의하기</a>
     </div>
     <p class="footer-notice">모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>중요한 결정 전 반드시 전문가와 확인하세요.</p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

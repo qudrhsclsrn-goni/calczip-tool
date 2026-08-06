@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>연봉 실수령액 계산기 - CalcZip</title>
-  <meta name="description" content="연봉 입력 시 4대보험, 소득세, 지방소득세 공제 후 실수령액을 자동 계산. 월급·세후 연봉 확인." />
+  <title>연봉 실수령액 계산기 - 세후 월급 4대보험 소득세 공제 계산 (2024)</title>
+  <meta name="keywords" content="연봉실수령액, 연봉계산기, 월급실수령액, 4대보험계산기, 세후월급계산, 연봉세금계산" />
+  <meta name="description" content="연봉 또는 월급 입력 시 4대보험(국민연금·건강보험·고용보험), 소득세, 지방소득세 공제 후 실수령액 자동 계산. 부양가족·자녀 세액공제 반영." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
@@ -29,13 +37,39 @@
     .dep-btn { width:30px; height:30px; border:1px solid var(--border); border-radius:var(--radius-sm); background:var(--input-bg); color:var(--text-primary); font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.15s; }
     .dep-btn:hover { border-color:var(--primary); color:var(--primary); }
     .dep-count { font-size:16px; font-weight:700; color:var(--text-primary); min-width:24px; text-align:center; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="연봉 실수령액 계산기 - 세후 월급 자동 계산" />
+  <meta property="og:description" content="연봉 입력하면 4대보험·소득세 공제 후 실제 월 수령액을 바로 확인." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="연봉 실수령액 계산기 - 세후 월급 자동 계산" />
+  <meta name="twitter:description" content="연봉 입력하면 4대보험·소득세 공제 후 실제 월 수령액을 바로 확인." />
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="index.html">홈</a>
@@ -160,6 +194,47 @@
       </div>
     </div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">연봉 실수령액 계산 방법</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <p style="margin-bottom:12px">월급에서는 <strong style="color:var(--primary)">4대보험과 소득세·지방소득세</strong>가 공제됩니다. 연봉을 12로 나눈 월 급여에서 아래 항목들이 빠집니다.</p>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">4대보험 공제율 (2024년 기준)</h3>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:2">
+          국민연금: 4.5% (월 최대 265,500원 - 상한액 590만원)<br>
+          건강보험: 3.545%<br>
+          장기요양보험: 건강보험료의 12.95%<br>
+          고용보험: 0.9%
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">소득세 계산</h3>
+        <p style="margin-bottom:8px">근로소득 간이세액표를 기준으로 계산됩니다. 부양가족 수에 따라 인적공제가 적용되어 세액이 달라집니다. 자녀 세액공제는 1명 15만원, 2명 35만원, 3명 이상 추가 1명당 30만원입니다.</p>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px">
+          💡 실제 실수령액은 회사 규모, 식대 비과세 항목, 연말정산 결과에 따라 다를 수 있습니다.
+        </div>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>실제 월급이 계산기와 다른 이유는?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">식대(월 20만원 비과세), 차량유지비, 육아수당 등 비과세 항목이 있거나, 회사가 4대보험 일부를 부담하는 경우 차이가 생깁니다. 또한 연말정산 결과에 따라 매월 원천징수 세액이 조정될 수 있습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>세전 연봉 5천만원이면 실수령액은?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">부양가족 1명(본인) 기준으로 월 약 356만원 내외입니다. 4대보험 약 26만원, 소득세+지방소득세 약 34만원이 공제됩니다. 부양가족이 많을수록 세금이 줄어 실수령액이 높아집니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>국민연금 상한액이란?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">국민연금은 월 기준소득월액 상한(590만원)이 있어, 월급이 590만원을 넘어도 국민연금은 최대 265,500원(590만원 × 4.5%)까지만 납부합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>프리랜서나 사업자도 사용할 수 있나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">이 계산기는 근로소득자(직장인) 기준입니다. 프리랜서나 사업자는 3.3% 원천징수 방식이 다르며, 종합소득세 신고 시 세율도 다릅니다. 프리랜서의 경우 세전 소득 × 96.7%가 대략적인 실수령액입니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
     <div>
@@ -189,9 +264,9 @@
     <p class="footer-notice">
       모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
       중요한 결정 전 반드시 전문가와 확인하세요.<br>
-      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+      물타기계산기은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
     </p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>D-day 계산기 - CalcZip</title>
-  <meta name="description" content="날짜를 입력하면 D-day를 자동 계산. 여러 개 등록, 저장, 관리 가능. 기념일·시험·여행 등 중요한 날을 한눈에 확인하세요." />
+  <title>D-day 계산기 - 날짜 카운트다운 기념일·시험·여행 날짜 계산</title>
+  <meta name="keywords" content="D-day계산기, 디데이계산기, 날짜계산기, 기념일계산기, 수능디데이, 날짜카운트다운" />
+  <meta name="description" content="D-day 계산기. 기념일, 시험, 여행, 수능 등 중요한 날까지 남은 날짜를 계산. 여러 개 등록·저장, 매년 반복 기능. 브라우저에 자동 저장." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
@@ -63,13 +71,39 @@
 
     .today-highlight { background:linear-gradient(135deg,#dcfce7,#bbf7d0); border-color:#86efac; }
     [data-theme="dark"] .today-highlight { background:linear-gradient(135deg,#14532d44,#14532d66); border-color:#16a34a; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="D-day 계산기 - 중요한 날까지 남은 날짜 계산" />
+  <meta property="og:description" content="기념일·시험·여행까지 남은 날짜를 계산하고 저장하세요. 매년 반복 기능 지원." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="D-day 계산기 - 중요한 날까지 남은 날짜 계산" />
+  <meta name="twitter:description" content="기념일·시험·여행까지 남은 날짜를 계산하고 저장하세요. 매년 반복 기능 지원." />
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="index.html">홈</a>
@@ -136,6 +170,47 @@
     <!-- D-day 목록 -->
     <div id="dday-list"></div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">D-day 계산기 사용법</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:0 0 8px">D-day 등록 방법</h3>
+        <ol style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px"><strong>"+ 새 D-day 추가"</strong> 버튼 클릭</li>
+          <li style="margin-bottom:6px">이모지 선택 (📅🎂💍✈️ 등 20가지)</li>
+          <li style="margin-bottom:6px">이름과 날짜 입력</li>
+          <li style="margin-bottom:6px">기념일이라면 <strong>"매년 반복"</strong> 체크</li>
+          <li style="margin-bottom:6px"><strong>"추가하기"</strong> 클릭</li>
+        </ol>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">D-day 표시 방법</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px"><strong>D-3</strong>: 3일 후 (미래)</li>
+          <li style="margin-bottom:6px"><strong>D-Day</strong>: 오늘! (초록색 강조)</li>
+          <li style="margin-bottom:6px"><strong>D+10</strong>: 10일 지남 (과거)</li>
+        </ul>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px">
+          💡 모든 D-day는 브라우저에 자동 저장되어 다음 방문 시에도 유지됩니다.
+        </div>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>D-day 기록이 사라졌어요.</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">D-day 기록은 브라우저 로컬 스토리지에 저장됩니다. 브라우저 데이터(쿠키·캐시) 삭제 시 함께 삭제됩니다. 또한 다른 기기나 다른 브라우저에서는 기록이 공유되지 않습니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>매년 반복 기능은 어떻게 작동하나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">매년 반복을 체크하면 해당 날짜가 지나면 자동으로 다음 해 같은 날로 업데이트됩니다. 생일, 결혼기념일 등 매년 반복되는 날에 사용하면 편리합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>D-day를 몇 개까지 등록할 수 있나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">등록 개수 제한은 없습니다. 원하는 만큼 추가할 수 있으며, 가까운 순·등록 순·지난 날 보기로 정렬할 수 있습니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
     <div>
@@ -164,9 +239,9 @@
     </div>
     <p class="footer-notice">
       모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
-      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+      물타기계산기은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
     </p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 

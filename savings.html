@@ -1,11 +1,19 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous"></script>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5000637956714787" crossorigin="anonymous">
+function toggleFaq(btn) {
+  btn.classList.toggle('open');
+  const ans = btn.nextElementSibling;
+  ans.classList.toggle('open');
+}
+
+</script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>적금·예금 계산기 - CalcZip</title>
-  <meta name="description" content="적금·예금 만기 수령액, 세후 이자를 자동 계산. 일반과세·비과세·세금우대·ISA 선택 가능. 단리·복리 방식 지원." />
+  <title>적금 계산기 - 예금 만기 수령액·세후이자 계산 (비과세·ISA)</title>
+  <meta name="keywords" content="적금계산기, 예금계산기, 적금이자계산기, 비과세적금, ISA계산기, 만기수령액계산" />
+  <meta name="description" content="적금·예금 만기 수령액과 세후 이자를 자동 계산. 일반과세(15.4%)·비과세·세금우대(1.4%)·ISA 계좌 선택 가능. 단리·복리 방식 지원." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap" />
@@ -38,13 +46,39 @@
     .month-table-wrap { max-height:280px; overflow-y:auto; border:1px solid var(--border); border-radius:var(--radius-sm); }
     .month-table-wrap::-webkit-scrollbar { width:4px; }
     .month-table-wrap::-webkit-scrollbar-thumb { background:var(--border-2); border-radius:2px; }
+  
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q {
+      width: 100%; padding: 13px 0; background: none; border: none;
+      font-size: 14px; font-weight: 500; color: var(--text-primary);
+      cursor: pointer; text-align: left; display: flex;
+      justify-content: space-between; align-items: center; gap: 12px;
+      font-family: var(--font);
+    }
+    .faq-q:hover { color: var(--primary); }
+    .faq-arrow { font-size: 11px; color: var(--text-muted); transition: transform 0.2s; flex-shrink: 0; }
+    .faq-q.open .faq-arrow { transform: rotate(180deg); }
+    .faq-a {
+      font-size: 13px; color: var(--text-secondary); line-height: 1.8;
+      padding: 0 0 13px; display: none;
+    }
+    .faq-a.open { display: block; }
+
   </style>
+  <meta property="og:title" content="적금·예금 계산기 - 세후 만기 수령액 계산" />
+  <meta property="og:description" content="비과세·ISA·세금우대 선택 가능. 적금 만기 수령액을 정확하게 계산하세요." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="물타기계산기" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="적금·예금 계산기 - 세후 만기 수령액 계산" />
+  <meta name="twitter:description" content="비과세·ISA·세금우대 선택 가능. 적금 만기 수령액을 정확하게 계산하세요." />
 </head>
 <body>
 
 <header class="site-header">
   <div class="header-inner">
-    <a href="index.html" class="logo">Calc<span>Zip</span></a>
+    <a href="index.html" class="logo">물타기<span>계산기</span></a>
     <div class="header-right">
       <nav class="header-nav">
         <a href="index.html">홈</a>
@@ -207,6 +241,49 @@
       </div>
     </div>
 
+
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">적금·예금 이자 계산 방법</h2>
+      <div style="font-size:14px;color:var(--text-secondary);line-height:1.9">
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:0 0 8px">적금 이자 계산 (단리 기준)</h3>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:12px;font-size:13px">
+          총 이자 = 월 납입액 × 금리/12 × (납입 회차 합계)<br>
+          예: 월 30만원, 연 3.5%, 12개월 → 약 68,250원 이자
+        </div>
+        <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:16px 0 8px">세금 유형별 차이</h3>
+        <ul style="padding-left:18px;margin-bottom:12px">
+          <li style="margin-bottom:6px"><strong>일반과세 (15.4%)</strong>: 이자의 15.4%를 세금으로 납부. 가장 일반적.</li>
+          <li style="margin-bottom:6px"><strong>비과세</strong>: 새마을금고·신협 조합원, 농협 준조합원 등 자격 필요. 세금 0원.</li>
+          <li style="margin-bottom:6px"><strong>세금우대 (1.4%)</strong>: 상호금융기관에서 3,000만원 한도. 농특세만 부과.</li>
+          <li style="margin-bottom:6px"><strong>ISA 계좌</strong>: 일반형 200만원, 서민형 400만원까지 비과세. 초과분 9.9% 분리과세.</li>
+        </ul>
+        <div style="background:var(--surface-2);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px">
+          💡 같은 금리라면 ISA &gt; 비과세 &gt; 세금우대 &gt; 일반과세 순으로 세후 수익이 높습니다.
+        </div>
+      </div>
+    </div>
+    <div class="calc-card" style="margin-top:0">
+      <h2 style="font-size:18px;font-weight:800;color:var(--text-primary);margin-bottom:16px">자주 묻는 질문 (FAQ)</h2>
+      <div id="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>적금과 예금의 차이는 무엇인가요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">적금은 매달 일정 금액을 납입하는 상품이고, 예금(정기예금)은 목돈을 한번에 맡기는 상품입니다. 같은 금리라면 예금이 이자가 더 많습니다. 목돈이 있다면 예금, 매달 저축하려면 적금이 적합합니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>ISA 계좌가 뭔가요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">ISA(개인종합자산관리계좌)는 예금, 적금, 펀드, ETF 등 다양한 금융상품을 한 계좌에서 운용하며 세제 혜택을 받는 계좌입니다. 일반형은 200만원, 서민형(근로소득 5,000만원 이하)은 400만원까지 비과세이며, 초과분은 9.9% 분리과세입니다.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>비과세 통장은 누구나 만들 수 있나요?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">아니요, 비과세 혜택은 새마을금고·신협·농협·수협 등 상호금융기관의 조합원·준조합원 자격이 필요합니다. 1만원 출자금으로 조합원 가입 시 이자소득 비과세 혜택을 받을 수 있습니다 (1인당 3,000만원 한도).</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)"><span>적금 금리가 높은 곳을 찾으려면?</span><span class="faq-arrow">▼</span></button>
+          <div class="faq-a">금융감독원 금융상품통합비교공시(finlife.fss.or.kr)에서 은행별 적금·예금 금리를 비교할 수 있습니다. 인터넷뱅크(카카오뱅크, 토스뱅크, 케이뱅크)가 일반 시중은행보다 금리가 높은 경우가 많습니다.</div>
+        </div>
+      </div>
+    </div>
+
     <div class="ad-banner ad-banner-tall"><!-- AdSense 300x250 -->광고 영역 (300×250)</div>
 
     <div>
@@ -236,9 +313,9 @@
     <p class="footer-notice">
       모든 계산 결과는 참고용이며, 실제 수치와 다를 수 있습니다.<br>
       중요한 결정 전 반드시 전문가와 확인하세요.<br>
-      CalcZip은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
+      물타기계산기은 어떠한 개인정보도 저장하지 않습니다. 입력한 값은 내 브라우저 안에서만 처리됩니다.
     </p>
-    <p class="footer-copy">© 2026 CalcZip. All rights reserved.</p>
+    <p class="footer-copy">© 2026 물타기계산기. All rights reserved.</p>
   </div>
 </footer>
 
